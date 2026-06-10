@@ -1,39 +1,46 @@
-"""Main entry point for the Unified MCP & API Service.
+"""Main entry point for the FastAPI-MCP Feed Service.
 
 This module orchestrates the startup of the application. It acts as a switchboard
 between two primary execution modes:
 1. HTTP API Mode: Starts a FastAPI server with Uvicorn.
 2. MCP Server Mode: Starts a FastMCP server using the STDIO transport.
-
-Design Pattern:
-    Orchestrator - Centralizes startup logic and configuration routing.
 """
 
 import sys
 import uvicorn
+from fastapi import FastAPI
+from fastapi_mcp import FastApiMCP
+from api_feed.routers import router as feed_router
 
-def start():
+# Create the standard FastAPI application
+app = FastAPI(
+    title="Feed Service API",
+    description="Unified HTTP API and MCP Service for Feed operations.",
+    version="1.0.0"
+)
+
+# Include the domain-specific router
+app.include_router(feed_router)
+
+# Wrap the FastAPI app with the MCP adapter
+mcp = FastApiMCP(app)
+
+def main():
     """Starts the application service based on command line arguments.
 
     Default behavior starts the HTTP API. If 'mcp' is passed as the first
     argument, it starts the FastMCP server in STDIO mode.
     """
-    # Check for the 'mcp' flag to toggle between API and raw MCP modes
     if len(sys.argv) > 1 and sys.argv[1].lower() == "mcp":
         print("Starting the explicit FastMCP Server via STDIO...")
-        
-        # Delayed import to avoid initializing unused services
-        from unified_mcp_app.mcp import mcp
-        
-        # mcp.run() defaults to STDIO transport, required by AI clients like Claude
         mcp.run()
     else:
         print("Starting the Unified HTTP API Service...")
-        print("Run `uv run python main.py mcp` to start the raw FastMCP STDIO server instead.")
+        print("Run `uv run python -m api_feed.server mcp` to start the raw FastMCP STDIO server instead.")
         print("API documentation is available at: http://localhost:8000/docs")
         
-        # Uvicorn entry point points to the 'app' instance in the api.server module
-        uvicorn.run("unified_mcp_app.api.server:app", host="localhost", port=8000, reload=True)
+        # Uvicorn entry point points to the 'app' instance
+        uvicorn.run("api_feed.server:app", host="localhost", port=8000, reload=True)
 
 if __name__ == "__main__":
-    start()
+    main()

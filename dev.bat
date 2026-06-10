@@ -838,8 +838,8 @@ call :Install-App "MiKTeX.MiKTeX" "MiKTeX" "pdflatex" "MiKTeX"
 @REM Platform Dependents - Windows native scripting tools
 @REM ---------------------------------------------------------------------------
 call :Install-App "AutoHotkey.AutoHotkey" "AutoHotkey" "AutoHotkey" "AutoHotkey" "SKIP_VERIFY"
-call :Find-Directory "AutoHotkey"
-if %FOUND_DIR% EQU 1 call :Prompt-Path "AutoHotkey" "\v2"
+@REM call :Find-Directory "AutoHotkey"
+@REM if %FOUND_DIR% EQU 1 call :Prompt-Path "AutoHotkey" "\v2"
 
 @REM ---------------------------------------------------------------------------
 @REM Platform Independent - Python native tools
@@ -864,6 +864,34 @@ call :Install-App "JetBrains.PyCharm" "PyCharm" "" "PyCharm" "SKIP_VERIFY"
 @REM Platform Independent - Java IDE
 @REM ---------------------------------------------------------------------------
 call :Install-App "JetBrains.IntelliJIDEA.Community" "IntelliJ IDEA Community" "" "IntelliJ IDEA" "SKIP_VERIFY"
+
+@REM ---------------------------------------------------------------------------
+@REM Platform Independent - Agentic IDE (Kiro)
+@REM  1. An agentic tool that has a CLI and IDE implementation
+@REM  2. Used for coding throughout the training
+@REM ---------------------------------------------------------------------------
+call :Install-App "Amazon.Kiro" "Kiro" "" "Kiro" "SKIP_VERIFY"
+
+@REM ---------------------------------------------------------------------------
+@REM Platform Independent - AI-first IDE (Cursor)
+@REM  1. An AI-first code editor built on VS Code
+@REM  2. Used for AI-assisted development
+@REM ---------------------------------------------------------------------------
+call :Install-App "Anysphere.Cursor" "Cursor" "" "Cursor" "SKIP_VERIFY"
+
+@REM ---------------------------------------------------------------------------
+@REM Platform Independent - API Testing Platform (Postman)
+@REM  1. An API testing platform
+@REM  2. Useful for your project work
+@REM ---------------------------------------------------------------------------
+call :Install-App "Postman.Postman" "Postman" "" "Postman" "SKIP_VERIFY"
+
+@REM ---------------------------------------------------------------------------
+@REM Platform Independent - Database Management Tool (DBeaver)
+@REM  1. A database management tool
+@REM  2. Useful for your project work
+@REM ---------------------------------------------------------------------------
+call :Install-App "DBeaver.DBeaver.Community" "DBeaver" "" "DBeaver" "SKIP_VERIFY"
 
 
 @REM -----------------------------

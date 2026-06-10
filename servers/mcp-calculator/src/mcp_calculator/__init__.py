@@ -1,0 +1,1 @@
+"""FastMCP Calculator Service."""

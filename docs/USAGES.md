@@ -1,37 +1,43 @@
 # Usage Guide
 
-This guide explains how to interact with the **Unified MCP & API Service**.
+This guide explains how to interact with the servers in the **Unified MCP Workspace**.
 
 ## 1. Direct HTTP API (REST)
-The HTTP API is best for direct interaction via web browsers, scripts, or traditional applications.
+The HTTP API is provided by the `api-feed` server and is best for direct interaction via web browsers, scripts, or traditional applications.
 
 ### Start the Service
 ```bash
-uv run python main.py
+uv run --directory servers/api-feed python -m api_feed.server
 ```
 
 ### Interactive Documentation
 Once the server is running, open your browser and navigate to:
 **`http://localhost:8000/docs`**
 
-You will see an interactive Swagger UI. You can expand any endpoint (e.g., `/calculator/multiply`) and click **"Try it out"** to send real requests to the server.
+You will see an interactive Swagger UI. You can expand any endpoint and click **"Try it out"** to send real requests to the server.
 
 ### Example curl Request
 ```bash
-curl -X POST "http://localhost:8000/calculator/multiply?a=10&b=5"
+curl -X GET "http://localhost:8000/feed/fcc_news_search?query=python"
 ```
 
 ---
 
-## 2. MCP Server (For AI Agents)
-The MCP (Model Context Protocol) interface allows AI models like Claude to discover and use your tools automatically.
+## 2. MCP Servers (For AI Agents)
+The MCP (Model Context Protocol) interface allows AI models like Claude to discover and use your tools automatically. The workspace currently exposes two MCP servers.
 
-### Start the MCP Server (STDIO)
-To run the server in a mode compatible with most AI clients:
+### Start the MCP Servers (STDIO)
+To run the servers in a mode compatible with most AI clients:
+
+**Calculator FastMCP Server:**
 ```bash
-uv run python main.py mcp
+uv run --directory servers/mcp-calculator python -m mcp_calculator.server
 ```
-*Note: This starts a dashboard for monitoring. The actual communication happens over standard input/output.*
+
+**Feed FastAPI-MCP Server:**
+```bash
+uv run --directory servers/api-feed python -m api_feed.server mcp
+```
 
 ### Connect to Claude Desktop
 To let Claude Desktop use your tools, add the following to your configuration file:
@@ -42,14 +48,26 @@ To let Claude Desktop use your tools, add the following to your configuration fi
 ```json
 {
   "mcpServers": {
-    "unified-mcp-app": {
+    "mcp-calculator": {
       "command": "uv",
       "args": [
         "--directory",
-        "C:/Users/manua/source/repo/_references/_empty",
+        "C:/Users/manua/source/repo/_references/_python02-personal_mcp_registry/servers/mcp-calculator",
         "run",
         "python",
-        "main.py",
+        "-m",
+        "mcp_calculator.server"
+      ]
+    },
+    "api-feed": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "C:/Users/manua/source/repo/_references/_python02-personal_mcp_registry/servers/api-feed",
+        "run",
+        "python",
+        "-m",
+        "api_feed.server",
         "mcp"
       ]
     }
@@ -59,8 +77,8 @@ To let Claude Desktop use your tools, add the following to your configuration fi
 
 ### Example AI Prompt
 Once connected, you can ask Claude:
-- *"Multiply 1234 by 5678."*
-- *"What is the latest news from FreeCodeCamp?"*
-- *"Search the FreeCodeCamp YouTube channel for 'Python tutorial'."*
+- *"Multiply 1234 by 5678."* (Uses `mcp-calculator`)
+- *"What is the latest news from FreeCodeCamp?"* (Uses `api-feed`)
+- *"Search the FreeCodeCamp YouTube channel for 'Python tutorial'."* (Uses `api-feed`)
 
-The AI will automatically choose the correct tool, execute your Python code, and report the results back to you.
+The AI will automatically choose the correct tool, execute your Python code in the appropriate isolated process, and report the results back to you.
