@@ -50,15 +50,3 @@ mkdir .vscode
     }
 }
 ```
-
-## Getting Started
-
-1. Clone this repository
-2. Set up your Python virtual environment
-3. Install the required packages:
-   ```bash
-   pip install -r requirements.txt
-   ```
-4. Start with the Practice/ directory to learn the concepts
-5. Reference MainCode/ to see the production-ready implementations
-
