@@ -3,6 +3,7 @@ from fastapi import FastAPI, Request
 from starlette.responses import Response
 from mcp.server import Server
 from mcp.server.sse import SseServerTransport
+from mcp_core.system import fetch_system_status
 
 # 1. Initialize the core MCP Server
 mcp_server = Server("sample-http-mcp-server")
@@ -31,7 +32,7 @@ async def handle_list_tools():
 async def handle_call_tool(name: str, arguments: dict):
     """Execute the tool requested by the LLM."""
     if name == "fetch_system_status":
-        return [{"type": "text", "text": "All systems operational over HTTP/SSE."}]
+        return fetch_system_status()
     raise ValueError(f"Tool not found: {name}")
 
 
