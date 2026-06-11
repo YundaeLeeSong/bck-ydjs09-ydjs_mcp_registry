@@ -128,7 +128,7 @@ An adapter for FastAPI. Takes an existing app — routes, Pydantic models, depen
 - **Automatic translation** — converts OpenAPI/Swagger definitions into MCP tool schemas.
 - **Reuses architecture** — same routing, auth, and business logic for web and AI clients.
 
-Use **FastAPI-MCP** when you already have a web backend and want to expose it to AI agents without rewriting it — or when both traditional clients and AI agents need the same API. In this repo: `server/mcp-api-feed` wraps `app/app-api-feed`.
+Use **FastAPI-MCP** when you already have a web backend and want to expose it to AI agents without rewriting it — or when both traditional clients and AI agents need the same API. In this repo: `server/mcp-api-feed` wraps `server/app-api-feed`.
 
 ### Official MCP SDK — custom HTTP/SSE server
 
@@ -232,7 +232,7 @@ The application is structured following the **Workspace Mono-Repo Pattern**:
 
 ## Usage
 
-### Central CLI Registry
+### 1. The Interactive CLI Registry (Recommended)
 The easiest way to start any of the services is via the central interactive CLI wrapper. It uses `rich` to present an interactive menu of all available servers (both REST APIs and MCP servers).
 
 **Start the registry:**
@@ -240,45 +240,44 @@ The easiest way to start any of the services is via the central interactive CLI 
 uv run --directory app/cli-mcp-registry python -m cli_mcp_registry
 ```
 
-*(Alternatively, you can start the individual services as described below.)*
+---
 
-### HTTP API (REST)
-The HTTP API is provided by the `app-api-feed` app and is best for direct interaction via web browsers, scripts, or traditional applications.
+### 2. Standalone Execution (Advanced)
+If you prefer not to use the interactive CLI, you can start the individual services directly.
 
-**Start the service directly:**
+#### A. HTTP API (REST)
+Provided by the `server/app-api-feed` app. Best for direct interaction via web browsers, scripts, or traditional applications.
+
+**Start the service:**
 ```bash
 uv run --directory server/app-api-feed python -m app_api_feed
 ```
 
-**Interactive documentation:** Once the server is running, open **`http://localhost:8000/docs`** in your browser. You will see an interactive Swagger UI where you can expand any endpoint and click **"Try it out"** to send real requests.
+**Interactive documentation:** Open **`http://localhost:8000/docs`** in your browser. You will see an interactive Swagger UI to test real requests.
 
 **Example curl request:**
 ```bash
 curl -X GET "http://localhost:8000/feed/fcc_news_search?query=python"
 ```
 
-
-
-
-
-### MCP Servers (For AI Agents)
+#### B. MCP Servers (For AI Agents)
 The MCP interface allows AI models like Claude to discover and use your tools automatically. The workspace exposes three MCP servers.
 
 **Start the MCP servers directly:**
 ```bash
-# Calculator FastMCP server (STDIO)
+# 1. Calculator FastMCP server (STDIO)
 uv run --directory server/mcp-stdio-calculator python -m mcp_stdio_calculator
 
-# Feed FastAPI-MCP server (STDIO)
+# 2. Feed FastAPI-MCP server (STDIO)
 uv run --directory server/mcp-api-feed python -m mcp_api_feed
 
-# System Status Custom Server (HTTP/SSE)
+# 3. System Status Custom Server (HTTP/SSE)
 uv run --directory server/mcp-sse-system-status python -m mcp_sse_system_status
 ```
 
 **Verification (manual test):**
-- **HTTP/SSE:** The system status server will immediately print Uvicorn startup logs and listen on `http://localhost:8000`. You can visit `http://localhost:8000/sse` to verify the stream opens.
-- **STDIO:** When you run a STDIO server manually, it will appear stuck or show no output. This is **expected behavior** — it is waiting for JSON-RPC instructions via `stdin`. To verify it is working, perform the **MCP handshake** by pasting these lines one at a time and pressing **Enter** after each:
+- **HTTP/SSE (`mcp-sse-system-status`):** The server will immediately print Uvicorn startup logs and listen on `http://localhost:8000`. Visit `http://localhost:8000/sse` in your browser to verify the stream opens.
+- **STDIO (`mcp-stdio-calculator` and `mcp-api-feed`):** When you run a STDIO server manually, it will appear stuck or show no output. This is **expected behavior** — it is waiting for JSON-RPC instructions via `stdin`. To verify it is working, perform the **MCP handshake** by pasting these lines one at a time and pressing **Enter** after each:
 
 1. Initialize request:
 ```json
