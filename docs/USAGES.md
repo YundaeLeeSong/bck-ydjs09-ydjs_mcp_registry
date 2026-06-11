@@ -7,7 +7,7 @@ The HTTP API is provided by the `app-api-feed` app and is best for direct intera
 
 ### Start the Service
 ```bash
-uv run --directory apps/app-api-feed python -m app_api_feed.server
+uv run --directory apps/app-api-feed python -m app_api_feed
 ```
 
 ### Interactive Documentation
@@ -31,13 +31,24 @@ To run the servers in a mode compatible with most AI clients:
 
 **Calculator FastMCP Server:**
 ```bash
-uv run --directory servers/mcp-calculator python -m mcp_calculator.server
+uv run --directory servers/mcp-calculator python -m mcp_calculator
 ```
 
 **Feed FastAPI-MCP Server:**
 ```bash
-uv run --directory servers/mcp-api-feed python -m mcp_api_feed.server
+uv run --directory servers/mcp-api-feed python -m mcp_api_feed
 ```
+
+### Verification (Manual Test)
+When you run an MCP server manually, it will appear to "stuck" or show no output. This is **expected behavior** as it is waiting for JSON-RPC instructions via `stdin`.
+
+To verify it is working, run the server and then paste the following line into your terminal and press **Enter**:
+
+```json
+{"jsonrpc": "2.0", "id": 1, "method": "tools/list"}
+```
+
+If the server is functioning correctly, it will immediately respond with a JSON object listing all available tools.
 
 ### Connect to Claude Desktop
 To let Claude Desktop use your tools, add the following to your configuration file:
@@ -45,7 +56,7 @@ To let Claude Desktop use your tools, add the following to your configuration fi
 **File Path:** `%APPDATA%\Claude\claude_desktop_config.json`
 
 **Configuration:**
-```json
+```
 {
   "mcpServers": {
     "mcp-calculator": {
@@ -56,7 +67,7 @@ To let Claude Desktop use your tools, add the following to your configuration fi
         "run",
         "python",
         "-m",
-        "mcp_calculator.server"
+        "mcp_calculator"
       ]
     },
     "mcp-api-feed": {
@@ -67,7 +78,7 @@ To let Claude Desktop use your tools, add the following to your configuration fi
         "run",
         "python",
         "-m",
-        "mcp_api_feed.server"
+        "mcp_api_feed"
       ]
     }
   }

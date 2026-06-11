@@ -61,7 +61,7 @@ The application is structured following the **Workspace Mono-Repo Pattern**:
 ### HTTP API
 To start the FastAPI service for the Feed domain:
 ```bash
-uv run --directory apps/app-api-feed python -m app_api_feed.server
+uv run --directory apps/app-api-feed python -m app_api_feed
 ```
 Visit `http://localhost:8000/docs` for interactive documentation.
 
@@ -70,12 +70,12 @@ To start the raw MCP STDIO servers (for AI clients):
 
 **Calculator MCP Server:**
 ```bash
-uv run --directory servers/mcp-calculator python -m mcp_calculator.server
+uv run --directory servers/mcp-calculator python -m mcp_calculator
 ```
 
 **Feed MCP Server:**
 ```bash
-uv run --directory servers/mcp-api-feed python -m mcp_api_feed.server
+uv run --directory servers/mcp-api-feed python -m mcp_api_feed
 ```
 
 ## 6. Development Lifecycle (uv)
