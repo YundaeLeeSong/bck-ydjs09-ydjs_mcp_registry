@@ -108,7 +108,7 @@ Regardless of the transport, all MCP clients and servers exchange messages using
 
 ## Software Design
 
-This project uses two Python MCP libraries — each suited to a different layer of the stack:
+This project uses three different Python MCP implementation patterns — each suited to a different layer of the stack:
 
 ### FastMCP — native MCP server
 
@@ -130,12 +130,22 @@ An adapter for FastAPI. Takes an existing app — routes, Pydantic models, depen
 
 Use **FastAPI-MCP** when you already have a web backend and want to expose it to AI agents without rewriting it — or when both traditional clients and AI agents need the same API. In this repo: `server/mcp-api-feed` wraps `app/app-api-feed`.
 
-| | FastMCP | FastAPI-MCP |
-| :--- | :--- | :--- |
-| **Goal** | Native MCP server | Adapt REST APIs to MCP |
-| **Foundation** | Standalone | Requires FastAPI |
-| **Best for** | Greenfield AI-only tools | Existing or hybrid web backends |
-| **Duplication** | High if you also need a web API | None — routes are reused |
+### Official MCP SDK — custom HTTP/SSE server
+
+A lower-level implementation using `mcp.server.Server` and `mcp.server.sse.SseServerTransport` mounted on a web framework (like FastAPI).
+
+- **Remote Execution** — runs as a standalone web server accessible over the network.
+- **Custom Transport** — explicitly handles SSE connections and HTTP POST messages.
+- **Flexible** — can be deployed in containers, cloud instances, or anywhere on the network.
+
+Use the **Official SDK with SSE** when you need your MCP server to run remotely from the AI client, or when building a custom architecture that higher-level wrappers don't support. In this repo: `server/mcp-sse-system-status`.
+
+| | FastMCP | FastAPI-MCP | Official SDK (SSE) |
+| :--- | :--- | :--- | :--- |
+| **Goal** | Native MCP server | Adapt REST APIs to MCP | Remote/Custom MCP server |
+| **Foundation** | Standalone | Requires FastAPI | Web Framework (FastAPI) |
+| **Best for** | Greenfield AI-only tools | Existing or hybrid web backends | Remote deployments, custom network architectures |
+| **Duplication** | High if you also need a web API | None — routes are reused | High if building from scratch |
 
 ### Workspace Mono-Repo Pattern
 
@@ -174,12 +184,19 @@ The application is structured following the **Workspace Mono-Repo Pattern**:
     │       └── mcp_calculator/
     │           ├── __init__.py
     │           └── server.py      # MCP tool bindings
-    └── mcp-api-feed/              # MCP wrapper for FastAPI backend
+    ├── mcp-api-feed/              # MCP wrapper for FastAPI backend
+    │   ├── pyproject.toml
+    │   └── src/
+    │       └── mcp_api_feed/
+    │           ├── __init__.py
+    │           └── server.py      # FastAPI-MCP wrapper
+    └── mcp-sse-system-status/     # Custom HTTP/SSE MCP server
         ├── pyproject.toml
         └── src/
-            └── mcp_api_feed/
+            └── mcp_sse_system_status/
                 ├── __init__.py
-                └── server.py      # FastAPI-MCP wrapper
+                ├── __main__.py
+                └── server.py      # Core SSE server logic
 ```
 
 
@@ -225,18 +242,23 @@ curl -X GET "http://localhost:8000/feed/fcc_news_search?query=python"
 
 
 ### MCP Servers (For AI Agents)
-The MCP interface allows AI models like Claude to discover and use your tools automatically. The workspace exposes two MCP servers.
+The MCP interface allows AI models like Claude to discover and use your tools automatically. The workspace exposes three MCP servers.
 
-**Start the MCP servers (STDIO):**
+**Start the MCP servers:**
 ```bash
-# Calculator FastMCP server
+# Calculator FastMCP server (STDIO)
 uv run --directory server/mcp-calculator python -m mcp_calculator
 
-# Feed FastAPI-MCP server
+# Feed FastAPI-MCP server (STDIO)
 uv run --directory server/mcp-api-feed python -m mcp_api_feed
+
+# System Status Custom Server (HTTP/SSE)
+uv run --directory server/mcp-sse-system-status python -m mcp_sse_system_status
 ```
 
-**Verification (manual test):** When you run an MCP server manually, it will appear stuck or show no output. This is **expected behavior** — it is waiting for JSON-RPC instructions via `stdin`. To verify it is working, perform the **MCP handshake** by pasting these lines one at a time and pressing **Enter** after each:
+**Verification (manual test):**
+- **HTTP/SSE:** The system status server will immediately print Uvicorn startup logs and listen on `http://localhost:8000`. You can visit `http://localhost:8000/sse` to verify the stream opens.
+- **STDIO:** When you run a STDIO server manually, it will appear stuck or show no output. This is **expected behavior** — it is waiting for JSON-RPC instructions via `stdin`. To verify it is working, perform the **MCP handshake** by pasting these lines one at a time and pressing **Enter** after each:
 
 1. Initialize request:
 ```json
@@ -281,6 +303,9 @@ If the server is functioning correctly, the third command will return a JSON obj
         "-m",
         "mcp_api_feed"
       ]
+    },
+    "mcp-sse-system-status": {
+      "url": "http://localhost:8000/sse"
     }
   }
 }
