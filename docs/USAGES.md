@@ -74,10 +74,17 @@ To let Claude Desktop use your tools, add the following to your configuration fi
 }
 ```
 
-### Example AI Prompt
-Once connected, you can ask Claude:
-- *"Multiply 1234 by 5678."* (Uses `mcp-calculator`)
-- *"What is the latest news from FreeCodeCamp?"* (Uses `mcp-api-feed`)
-- *"Search the FreeCodeCamp YouTube channel for 'Python tutorial'."* (Uses `mcp-api-feed`)
+## 3. Workspace Maintenance
+To keep the project dependencies clean and up-to-date with your source code, use the following commands.
 
-The AI will automatically choose the correct tool, execute your Python code in the appropriate isolated process, and report the results back to you.
+### Automatically Sync Dependencies
+If you add new imports to your Python files, run this command to automatically update all `pyproject.toml` files in the workspace:
+```bash
+uv run poe sync-deps
+```
+
+### Manual Workspace Sync
+To ensure your local virtual environment matches the lockfile:
+```bash
+uv sync
+```

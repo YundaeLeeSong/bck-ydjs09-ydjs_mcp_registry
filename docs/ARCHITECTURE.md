@@ -80,5 +80,12 @@ uv run --directory servers/mcp-api-feed python -m mcp_api_feed.server
 
 ## 6. Development Lifecycle (uv)
 This project is managed using `uv` workspaces for high-performance dependency management and builds.
-- **Syncing:** `uv sync` (Syncs the entire workspace)
-- **Execution:** `uv run --directory <path> python ...`
+
+### Dependency Management
+The workspace includes an automated system to keep `pyproject.toml` files up-to-date with your source code imports.
+- **Sync Dependencies**: `uv run poe sync-deps` (Scans code and updates all member dependencies)
+
+### Standard Commands
+- **Syncing Workspace**: `uv sync` (Installs all dependencies into the shared `.venv`)
+- **Execution**: `uv run --directory <path> python ...`
+
