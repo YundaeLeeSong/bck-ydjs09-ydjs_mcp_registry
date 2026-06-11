@@ -1,2 +1,8 @@
 [tool.uv.workspace]
-members = ["servers/*", "libs/*"]
+members = ["apps/*", "servers/*", "libs/*"]
+
+[tool.uv]
+dev-dependencies = ["poethepoet"]
+
+[tool.poe.tasks]
+sync-deps = "uv run uv/pipreqs.uv.py"

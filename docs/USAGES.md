@@ -3,11 +3,11 @@
 This guide explains how to interact with the servers in the **Unified MCP Workspace**.
 
 ## 1. Direct HTTP API (REST)
-The HTTP API is provided by the `api-feed` server and is best for direct interaction via web browsers, scripts, or traditional applications.
+The HTTP API is provided by the `app-api-feed` app and is best for direct interaction via web browsers, scripts, or traditional applications.
 
 ### Start the Service
 ```bash
-uv run --directory servers/api-feed python -m api_feed.server
+uv run --directory apps/app-api-feed python -m app_api_feed.server
 ```
 
 ### Interactive Documentation
@@ -36,7 +36,7 @@ uv run --directory servers/mcp-calculator python -m mcp_calculator.server
 
 **Feed FastAPI-MCP Server:**
 ```bash
-uv run --directory servers/api-feed python -m api_feed.server mcp
+uv run --directory servers/mcp-api-feed python -m mcp_api_feed.server
 ```
 
 ### Connect to Claude Desktop
@@ -59,16 +59,15 @@ To let Claude Desktop use your tools, add the following to your configuration fi
         "mcp_calculator.server"
       ]
     },
-    "api-feed": {
+    "mcp-api-feed": {
       "command": "uv",
       "args": [
         "--directory",
-        "C:/Users/manua/source/repo/_references/_python02-personal_mcp_registry/servers/api-feed",
+        "C:/Users/manua/source/repo/_references/_python02-personal_mcp_registry/servers/mcp-api-feed",
         "run",
         "python",
         "-m",
-        "api_feed.server",
-        "mcp"
+        "mcp_api_feed.server"
       ]
     }
   }
@@ -78,7 +77,7 @@ To let Claude Desktop use your tools, add the following to your configuration fi
 ### Example AI Prompt
 Once connected, you can ask Claude:
 - *"Multiply 1234 by 5678."* (Uses `mcp-calculator`)
-- *"What is the latest news from FreeCodeCamp?"* (Uses `api-feed`)
-- *"Search the FreeCodeCamp YouTube channel for 'Python tutorial'."* (Uses `api-feed`)
+- *"What is the latest news from FreeCodeCamp?"* (Uses `mcp-api-feed`)
+- *"Search the FreeCodeCamp YouTube channel for 'Python tutorial'."* (Uses `mcp-api-feed`)
 
 The AI will automatically choose the correct tool, execute your Python code in the appropriate isolated process, and report the results back to you.
