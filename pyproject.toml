@@ -1,3 +1,7 @@
+[project]
+name = "ydjs-mcp-registry"
+readme = "README.md"
+
 [tool.uv.workspace]
 members = ["app/*", "server/*", "lib/*"]
 

@@ -2,8 +2,7 @@
 name = "mcp-sse-system-status"
 version = "0.1.0"
 description = "A custom MCP server demonstrating HTTP/SSE transport"
-readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.14"
 dependencies = [
     "mcp==1.27.2",
     "fastapi==0.136.3",
