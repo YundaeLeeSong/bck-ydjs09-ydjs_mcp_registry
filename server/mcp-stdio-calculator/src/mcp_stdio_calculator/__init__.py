@@ -1,0 +1,1 @@
+"""FastMCP STDIO Calculator Service."""

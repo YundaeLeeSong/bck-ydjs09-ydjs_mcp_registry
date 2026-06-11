@@ -1,2 +1,13 @@
+[project]
+name = "ydjs-mcp-registry"
+version = "0.1.0"
+readme = "README.md"
+
 [tool.uv.workspace]
-members = ["servers/*", "libs/*"]
+members = ["app/*", "server/*", "lib/*"]
+
+[dependency-groups]
+dev = ["poethepoet"]
+
+[tool.poe.tasks]
+sync-deps = "uv run uv/pipreqs.uv.py"
