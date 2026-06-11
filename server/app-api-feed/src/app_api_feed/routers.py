@@ -4,7 +4,7 @@ This module defines the FastAPI endpoints for the RSS feed domain.
 """
 
 from fastapi import APIRouter
-from mcp_core.feed import fcc_news_search, fcc_youtube_search, fcc_secret_message
+from app_core.feed import fcc_news_search, fcc_youtube_search, fcc_secret_message
 
 # Initialize router with domain-specific prefix and tags
 router = APIRouter(prefix="/feed", tags=["feed"])

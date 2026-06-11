@@ -60,4 +60,4 @@ def fcc_secret_message() -> str:
     Returns:
         A string containing a secret coding message.
     """
-    return "Keep exploring! and happy coding! (MCP Server)"
+    return "Keep exploring! and happy coding! (App Server)"

@@ -1,0 +1,1 @@
+"""CLI wrapper for the registry servers."""

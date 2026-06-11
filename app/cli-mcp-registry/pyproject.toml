@@ -1,0 +1,22 @@
+[project]
+name = "cli-mcp-registry"
+version = "0.1.0"
+description = "Central CLI wrapper to launch registry servers"
+requires-python = ">=3.14"
+dependencies = [
+    "rich==13.7.0",
+    "app-api-feed",
+    "mcp-api-feed",
+    "mcp-stdio-calculator",
+    "mcp-sse-system-status",
+]
+
+[tool.uv.sources]
+app-api-feed = { workspace = true }
+mcp-api-feed = { workspace = true }
+mcp-stdio-calculator = { workspace = true }
+mcp-sse-system-status = { workspace = true }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
