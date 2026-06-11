@@ -61,7 +61,21 @@ When the maintenance script runs `uv add --package <member-name> -r requirements
    ```
 3. **Isolation** — because `uv` is workspace-aware, it treats `mcp-core` as a local directory rather than a PyPI package, preventing version conflicts and ensuring you always code against local changes.
 
+### Package Layout (`[build-system]`)
 
+Each workspace member is a **Python package** — not just a folder of scripts. The `[build-system]` block in its `pyproject.toml` tells installers how to build and install it:
+
+```toml
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+```
+
+- **`[build-system]`** — standard Python metadata (PEP 517): "use hatchling to turn this project into an installable package."
+- **`hatchling`** — the build tool that finds your source code and packages it. When `uv sync` installs a workspace member, it calls hatchling under the hood.
+- **`src/` layout** — hatchling's default convention: if a `src/` folder exists, look inside it for the package directory. The folder name matches the project name with hyphens turned to underscores — e.g. project `mcp-calculator` → code in `src/mcp_calculator/`.
+
+So `uv` does not guess paths on its own — it installs each member as a package, and hatchling knows to look in `src/<package_name>/`. That is why `python -m mcp_calculator` works after sync: the package is installed into `.venv` from that `src/` tree.
 
 
 
