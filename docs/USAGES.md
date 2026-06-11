@@ -42,13 +42,24 @@ uv run --directory servers/mcp-api-feed python -m mcp_api_feed
 ### Verification (Manual Test)
 When you run an MCP server manually, it will appear to "stuck" or show no output. This is **expected behavior** as it is waiting for JSON-RPC instructions via `stdin`.
 
-To verify it is working, run the server and then paste the following line into your terminal and press **Enter**:
+To verify it is working, you must perform the **MCP Handshake** by pasting these lines one by one into your terminal and pressing **Enter** after each:
 
+1. **Initialize Request**:
 ```json
-{"jsonrpc": "2.0", "id": 1, "method": "tools/list"}
+{"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {"capabilities": {}, "clientInfo": {"name": "test", "version": "1.0"}, "protocolVersion": "2024-11-05"}}
 ```
 
-If the server is functioning correctly, it will immediately respond with a JSON object listing all available tools.
+2. **Initialized Notification**:
+```json
+{"jsonrpc": "2.0", "method": "notifications/initialized"}
+```
+
+3. **List Tools**:
+```json
+{"jsonrpc": "2.0", "id": 2, "method": "tools/list"}
+```
+
+If the server is functioning correctly, the third command will return a JSON object listing all available tools.
 
 ### Connect to Claude Desktop
 To let Claude Desktop use your tools, add the following to your configuration file:
