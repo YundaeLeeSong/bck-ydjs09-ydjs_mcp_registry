@@ -151,9 +151,9 @@ Use the **Official SDK with SSE** when you need your MCP server to run remotely 
 
 The application is structured following the **Workspace Mono-Repo Pattern**:
 - **Separation of Concerns:**
-    - **Core Library (`lib/mcp-core`):** Pure business logic, utilities, and integrations (e.g., feed parsing and math functions). Completely decoupled from transport layers.
-    - **Isolated Apps (`app/`):** Hosting the primary user-facing services (e.g., FastAPI backend).
-    - **Isolated Servers (`server/`):** Exposing functionalities to AI agents via MCP.
+    - **Core Library (`lib/mcp-core`, `lib/app-core`):** Pure business logic, utilities, and integrations (e.g., feed parsing and math functions). Completely decoupled from transport layers.
+    - **CLI Application (`app/`):** The central runner for selecting and launching services.
+    - **Isolated Servers (`server/`):** Exposing functionalities via HTTP or to AI agents via MCP.
 - **Isolated Runtimes:** Using `uv --directory`, each server runs in its own context, ensuring dependencies don't conflict across services.
 
 ### Repository Structure
@@ -162,26 +162,38 @@ The application is structured following the **Workspace Mono-Repo Pattern**:
 .
 ├── pyproject.toml                 # Root workspace configuration
 ├── app/
-│   └── app-api-feed/              # FastAPI backend for feed functions
+│   └── cli-mcp-registry/          # Central CLI runner wrapper
 │       ├── pyproject.toml
 │       └── src/
-│           └── app_api_feed/
+│           └── cli_mcp_registry/
 │               ├── __init__.py
-│               ├── routers.py     # FastAPI endpoints for feed
-│               └── server.py      # FastAPI application
+│               └── __main__.py    # CLI entrypoint
 ├── lib/
-│   └── mcp-core/                  # Shared core business logic
+│   ├── app-core/                  # Shared core business logic for app
+│   │   ├── pyproject.toml
+│   │   └── src/
+│   │       └── app_core/
+│   │           ├── __init__.py
+│   │           └── feed.py        # RSS feed parsing
+│   └── mcp-core/                  # Shared core business logic for MCP
 │       ├── pyproject.toml
 │       └── src/
 │           └── mcp_core/
 │               ├── __init__.py
 │               ├── calculator.py  # Pure math logic
-│               └── feed.py        # RSS feed parsing
+│               └── system.py      # System utilities
 └── server/
-    ├── mcp-calculator/            # Standalone FastMCP server
+    ├── app-api-feed/              # FastAPI backend for feed functions
     │   ├── pyproject.toml
     │   └── src/
-    │       └── mcp_calculator/
+    │       └── app_api_feed/
+    │           ├── __init__.py
+    │           ├── routers.py     # FastAPI endpoints for feed
+    │           └── server.py      # FastAPI application
+    ├── mcp-stdio-calculator/      # Standalone FastMCP server
+    │   ├── pyproject.toml
+    │   └── src/
+    │       └── mcp_stdio_calculator/
     │           ├── __init__.py
     │           └── server.py      # MCP tool bindings
     ├── mcp-api-feed/              # MCP wrapper for FastAPI backend
@@ -220,14 +232,22 @@ The application is structured following the **Workspace Mono-Repo Pattern**:
 
 ## Usage
 
+### Central CLI Registry
+The easiest way to start any of the services is via the central interactive CLI wrapper. It uses `rich` to present an interactive menu of all available servers (both REST APIs and MCP servers).
 
+**Start the registry:**
+```bash
+uv run --directory app/cli-mcp-registry python -m cli_mcp_registry
+```
+
+*(Alternatively, you can start the individual services as described below.)*
 
 ### HTTP API (REST)
 The HTTP API is provided by the `app-api-feed` app and is best for direct interaction via web browsers, scripts, or traditional applications.
 
-**Start the service:**
+**Start the service directly:**
 ```bash
-uv run --directory app/app-api-feed python -m app_api_feed
+uv run --directory server/app-api-feed python -m app_api_feed
 ```
 
 **Interactive documentation:** Once the server is running, open **`http://localhost:8000/docs`** in your browser. You will see an interactive Swagger UI where you can expand any endpoint and click **"Try it out"** to send real requests.
@@ -244,10 +264,10 @@ curl -X GET "http://localhost:8000/feed/fcc_news_search?query=python"
 ### MCP Servers (For AI Agents)
 The MCP interface allows AI models like Claude to discover and use your tools automatically. The workspace exposes three MCP servers.
 
-**Start the MCP servers:**
+**Start the MCP servers directly:**
 ```bash
 # Calculator FastMCP server (STDIO)
-uv run --directory server/mcp-calculator python -m mcp_calculator
+uv run --directory server/mcp-stdio-calculator python -m mcp_stdio_calculator
 
 # Feed FastAPI-MCP server (STDIO)
 uv run --directory server/mcp-api-feed python -m mcp_api_feed
@@ -282,15 +302,15 @@ If the server is functioning correctly, the third command will return a JSON obj
 ```json
 {
   "mcpServers": {
-    "mcp-calculator": {
+    "mcp-stdio-calculator": {
       "command": "uv",
       "args": [
         "--directory",
-        "C:/Users/manua/source/repo/_references/_python02-personal_mcp_registry/server/mcp-calculator",
+        "C:/Users/manua/source/repo/_references/_python02-personal_mcp_registry/server/mcp-stdio-calculator",
         "run",
         "python",
         "-m",
-        "mcp_calculator"
+        "mcp_stdio_calculator"
       ]
     },
     "mcp-api-feed": {

@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Central CLI wrapper to launch registry servers"
 requires-python = ">=3.14"
 dependencies = [
-    "rich==13.7.0",
+    "rich==15.0.0",
     "app-api-feed",
     "mcp-api-feed",
     "mcp-stdio-calculator",

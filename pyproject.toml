@@ -6,8 +6,8 @@ readme = "README.md"
 [tool.uv.workspace]
 members = ["app/*", "server/*", "lib/*"]
 
-[tool.uv]
-dev-dependencies = ["poethepoet"]
+[dependency-groups]
+dev = ["poethepoet"]
 
 [tool.poe.tasks]
 sync-deps = "uv run uv/pipreqs.uv.py"
