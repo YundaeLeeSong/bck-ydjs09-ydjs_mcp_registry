@@ -7,7 +7,7 @@ The HTTP API is provided by the `app-api-feed` app and is best for direct intera
 
 ### Start the Service
 ```bash
-uv run --directory apps/app-api-feed python -m app_api_feed
+uv run --directory app/app-api-feed python -m app_api_feed
 ```
 
 ### Interactive Documentation

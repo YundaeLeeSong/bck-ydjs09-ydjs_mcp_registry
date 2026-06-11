@@ -61,7 +61,7 @@ The application is structured following the **Workspace Mono-Repo Pattern**:
 ### HTTP API
 To start the FastAPI service for the Feed domain:
 ```bash
-uv run --directory apps/app-api-feed python -m app_api_feed
+uv run --directory app/app-api-feed python -m app_api_feed
 ```
 Visit `http://localhost:8000/docs` for interactive documentation.
 

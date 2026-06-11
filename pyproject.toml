@@ -1,5 +1,5 @@
 [tool.uv.workspace]
-members = ["apps/*", "servers/*", "libs/*"]
+members = ["app/*", "servers/*", "libs/*"]
 
 [tool.uv]
 dev-dependencies = ["poethepoet"]
