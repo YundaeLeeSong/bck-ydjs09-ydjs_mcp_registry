@@ -1,0 +1,15 @@
+[project]
+name = "mcp-sse-system-status"
+version = "0.1.0"
+description = "A custom MCP server demonstrating HTTP/SSE transport"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "mcp",
+    "fastapi",
+    "uvicorn",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

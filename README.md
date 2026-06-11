@@ -108,7 +108,36 @@ Regardless of the transport, all MCP clients and servers exchange messages using
 
 ## Software Design
 
-By integrating MCP via `FastMCP` and `FastApiMCP`, this application allows AI models to dynamically discover and execute functionalities using structured input.
+This project uses two Python MCP libraries — each suited to a different layer of the stack:
+
+### FastMCP — native MCP server
+
+Built specifically for MCP. Decorator-based syntax (inspired by FastAPI), dedicated to defining MCP tools, resources, and prompts.
+
+- **Lightweight** — no full HTTP server or web framework required.
+- **Direct** — focuses on standard MCP transports (STDIO, SSE).
+- **Tool-centric** — designed around LLM tool calling.
+
+Use **FastMCP** when building something new and dedicated to an AI agent — e.g. a local utility toolkit or script runner. In this repo: `server/mcp-calculator`.
+
+### FastAPI-MCP — bridge for existing web apps
+
+An adapter for FastAPI. Takes an existing app — routes, Pydantic models, dependencies — and translates REST endpoints into MCP tools.
+
+- **Dual interface** — runs as both a REST API and an MCP server.
+- **Automatic translation** — converts OpenAPI/Swagger definitions into MCP tool schemas.
+- **Reuses architecture** — same routing, auth, and business logic for web and AI clients.
+
+Use **FastAPI-MCP** when you already have a web backend and want to expose it to AI agents without rewriting it — or when both traditional clients and AI agents need the same API. In this repo: `server/mcp-api-feed` wraps `app/app-api-feed`.
+
+| | FastMCP | FastAPI-MCP |
+| :--- | :--- | :--- |
+| **Goal** | Native MCP server | Adapt REST APIs to MCP |
+| **Foundation** | Standalone | Requires FastAPI |
+| **Best for** | Greenfield AI-only tools | Existing or hybrid web backends |
+| **Duplication** | High if you also need a web API | None — routes are reused |
+
+### Workspace Mono-Repo Pattern
 
 The application is structured following the **Workspace Mono-Repo Pattern**:
 - **Separation of Concerns:**
