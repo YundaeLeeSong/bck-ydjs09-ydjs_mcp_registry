@@ -7,9 +7,79 @@ that securely connects AI large language \textbf{models} (LLMs) to external
 standardized input and output (\textbf{STDIO}) for local integration or
 Server-Sent Events (\textbf{HTTP/SSE}) for network-based remote communication.
 
-Regardless of the transport, all MCP clients and servers exchange messages using
-\textbf{JSON-RPC 2.0}: structured request, response, and notification payloads
-sent over the chosen channel.
+Regardless of the transport, all MCP clients and servers exchange \textbf{JSON-RPC 2.0}
+payloads: structured requests, responses, and notifications.
+The transport decides how those payloads are wrapped.
+
+\paragraph{STDIO.}
+Locally, there are no HTTP headers.
+The host writes one JSON-RPC object per line to the server's \textbf{stdin} and reads replies from \textbf{stdout}:
+
+\begin{lstlisting}[style=json]
+{"jsonrpc": "2.0", "id": 1, "method": "tools/list"}
+\end{lstlisting}
+\begin{lstlisting}[style=json]
+{"jsonrpc": "2.0", "id": 1, "result": {"tools": [ ... ]}}
+\end{lstlisting}
+
+\paragraph{HTTP/SSE.}
+Over the network, the client opens \texttt{GET /sse} first.
+The server replies with \texttt{text/event-stream} and keeps that response open.
+JSON-RPC responses and notifications arrive on this stream; an early \texttt{endpoint} event names where to send outgoing messages (often \texttt{/messages}).
+
+\begin{httpexchange}
+\begin{lstlisting}[style=http]
+GET /sse HTTP/1.1
+Host: localhost:8000
+Accept: text/event-stream
+\end{lstlisting}
+\httpmidarrows
+\begin{lstlisting}[style=http]
+HTTP/1.1 200 OK
+Content-Type: text/event-stream
+
+event: endpoint
+data: /messages?sessionId=abc123
+
+event: message
+data: {"jsonrpc": "2.0", "id": 1, "result": {"tools": [ ... ]}}
+\end{lstlisting}
+\end{httpexchange}
+
+Outgoing JSON-RPC requests use a separate \texttt{POST} to that message endpoint.
+The HTTP response is usually \texttt{202 Accepted} with an empty body; the matching JSON-RPC reply is delivered on the SSE stream above.
+
+\begin{httpexchange}
+\begin{lstlisting}[style=http]
+POST /messages HTTP/1.1
+Host: localhost:8000
+Content-Type: application/json
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/list"
+}
+\end{lstlisting}
+\httpmidarrows
+\begin{lstlisting}[style=http]
+HTTP/1.1 202 Accepted
+\end{lstlisting}
+\end{httpexchange}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 \section{MCP Hub}
 
