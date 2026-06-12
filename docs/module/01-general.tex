@@ -1,0 +1,36 @@
+\newpage
+\part{General Information}
+
+\textbf{Model Context Protocol (MCP)} is a standardized communication \textbf{protocol}
+that securely connects AI large language \textbf{models} (LLMs) to external
+\textbf{contexts} like codebases, databases, and files, frequently using either
+standardized input and output (\textbf{STDIO}) for local integration or
+Server-Sent Events (\textbf{HTTP/SSE}) for network-based remote communication.
+
+Regardless of the transport, all MCP clients and servers exchange messages using
+\textbf{JSON-RPC 2.0}: structured request, response, and notification payloads
+sent over the chosen channel.
+
+\section{MCP Hub}
+
+People use \textbf{MCP Hub} in two different senses. The distinction matters when you read docs or community posts.
+
+\subsection{Runtime Hub}
+
+On your machine, the host or \textbf{runtime hub} inlcudes the following:
+\begin{enumerate}
+    \item Claude Desktop (CLI)
+    \item Cursor (IDE)
+    \item Windsurf (IDE)
+    \item any another CLI or IDE AI agents
+\end{enumerate} 
+The \textbf{host} reads one configuration file, \uline{starts each MCP server as a background process}, 
+and keeps every client session alive at the same time.
+When the \textbf{model} calls a \textbf{tool}, the host routes the \textbf{JSON-RPC} request to the right server and passes the result back into the conversation.
+In short, the host is the local \textbf{orchestrator} that wires many servers into a single agent session.
+
+\subsection{Discovery Hub}
+
+The same label is also used for a \textbf{public registry} or marketplace, like npm or Docker Hub, where you browse and install pre-built servers.
+Sites such as \url{https://smithery.ai} and \url{https://mcp-get.com} catalog community integrations (Slack, GitHub, memory stores, and more), often with a one-command install.
+Discovery hub \uline{helps you find servers, not run them}. Execution still happens in your host.

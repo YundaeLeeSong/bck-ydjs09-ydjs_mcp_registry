@@ -1,0 +1,91 @@
+\newpage
+\part{Distribution and Discovery}
+
+\section{Package Distribution}
+
+MCP servers are ordinary programs, usually written in \textbf{TypeScript (Node.js)} or
+\textbf{Python}. They are distributed the same way as everyday \textbf{packages}:
+
+\begin{itemize}
+  \item \textbf{NPM}: run TypeScript servers on demand with \lstinline[style=inline]|npx|.
+\begin{lstlisting}
+npx -y @modelcontextprotocol/server-github
+\end{lstlisting}
+  \item \textbf{PyPI}: run Python servers with \lstinline[style=inline]|uvx| or \lstinline[style=inline]|pip|.
+\begin{lstlisting}
+uvx mcp-server-sqlite
+\end{lstlisting}
+\end{itemize}
+
+Because servers are published packages, an AI \textbf{host} (such as Claude Desktop) can
+download and launch the latest version on the fly, with no manual install step required.
+
+\section{Official, Community, and Custom Servers}
+
+The \textbf{protocol} is open to everyone, but servers fall into a few familiar tiers:
+\begin{paratable}
+\begin{tabular}{|l|p{0.68\textwidth}|}
+\hline
+\textbf{Official}\vspace{0pt} &
+Maintained by the MCP team (Anthropic) and major partners.
+Hosted at \url{https://github.com/modelcontextprotocol/servers}.
+Reference implementations for services such as GitHub, Google Drive, and Slack.
+\\
+\hline
+\textbf{Community}\vspace{0pt} &
+Built by independent developers.
+Discoverable on GitHub or in galleries such as
+\url{https://mcp-get.com} and \url{https://smithery.ai}.
+\\
+\hline
+\textbf{Private / Custom}\vspace{0pt} &
+\textbf{Tools} you build for your own workflow: local scripts, internal APIs, or
+project-specific utilities.
+\\
+\hline
+\end{tabular}
+\end{paratable}
+
+\section{Automatic Tool Discovery}
+
+How does the AI know what a server can do?
+
+\begin{enumerate}
+  \item \textbf{Handshake.}
+    When the \textbf{host} starts an MCP server, it sends a \lstinline[style=inline]|tools/list| request
+    (part of the \textbf{JSON-RPC} conversation between \textbf{client} and
+    \textbf{server}).
+  \item \textbf{Self-description.}
+    The server replies with a structured \textbf{schema} for each tool: its name,
+    \textbf{parameters}, and a human-readable \textbf{description} of what it does.
+  \item \textbf{Reasoning.}
+    The \textbf{model} reads that schema at runtime.
+    If you ask \emph{``Is it raining in Tokyo?''} and a tool
+    \lstinline[style=inline]|get_weather(city: string)| is listed, the model can match your question
+    to the tool and call it.
+\end{enumerate}
+
+\textit{Example tool declaration (conceptual):}
+\begin{quote}
+  \lstinline[style=inline]|get_weather| needs \lstinline[style=inline]|city| (string).
+  Returns local temperature and conditions for the given city.
+\end{quote}
+
+No manual prompt engineering is required for each tool; the server advertises its
+\textbf{capabilities}, and the host exposes them to the model.
+
+\section{Connecting Servers to Your AI Client}
+
+Adding a new capability to your AI client follows the same pattern every time:
+
+\begin{enumerate}
+  \item \textbf{Find}: look up the package for the service you want
+  (e.g.\ Brave Search, Postgres).
+  \item \textbf{Auth}: obtain an API key or connection string for that service.
+  \item \textbf{Config}: add the launch command to your host configuration
+  (e.g.\ \lstinline[style=inline]|claude_desktop_config.json|).
+  \item \textbf{Restart}: restart the AI client so it loads the new server.
+\end{enumerate}
+
+After that, the model has new \emph{hands}: structured \textbf{tools} it can invoke to
+act on that part of the world on your behalf.
