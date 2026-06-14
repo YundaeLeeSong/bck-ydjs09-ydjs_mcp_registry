@@ -19,9 +19,46 @@ Server-Sent Events (\textbf{HTTP/SSE}) for network-based remote communication.
 
 \subsection{STDIO}
 
+For a local MCP server, the \textbf{host} runs on the same machine as the server.
+The host \uline{starts the MCP server as a child process} and talks to it through two OS pipes---there is no HTTP layer.
+The host writes \textbf{JSON-RPC 2.0} frames to the server's \textbf{stdin} and reads replies from \textbf{stdout}, one object per line.
+In short, \textbf{stdin} and \textbf{stdout} are the client-to-server and server-to-client pipelines.
+
+\begin{center}
+\begin{tikzpicture}
+\umlbasiccomponent[x=0,y=0.6]{Host}
+\umlbasiccomponent[x=8,y=0.6]{CalculatorService}
+\node[font=\scriptsize, below=2pt] at (Host.south) {MCP client};
+\node[font=\scriptsize, below=2pt] at (CalculatorService.south) {MCP server (child process)};
+\draw[->, semithick] (Host.east) -- node[above, font=\scriptsize, align=center] {stdin\\JSON-RPC request} (CalculatorService.west);
+\draw[->, semithick] (CalculatorService.west) -- node[below, font=\scriptsize, align=center] {stdout\\JSON-RPC response} (Host.east);
+\draw[->, dashed] (Host.south) -- ++(0,-1.1) -| node[near start, left, font=\scriptsize] {spawn} (CalculatorService.south);
+\end{tikzpicture}
+\end{center}
+
 
 \subsection{HTTP/SSE}
 
+When the MCP server runs on another machine, the host cannot attach to that process's real \textbf{stdin} and \textbf{stdout}.
+\textbf{HTTP/SSE} recreates the same two-pipeline shape over the network: \texttt{POST /messages} carries client-to-server frames (like \textbf{stdin}), and an open \texttt{GET /sse} stream carries server-to-client replies (like \textbf{stdout}).
+Each remote server is a separate process on its own port, with its own session URI and its own pair of channels.
+
+\begin{center}
+\begin{tikzpicture}
+\umlbasiccomponent[x=0,y=0]{ExampleHost}
+\umlbasiccomponent[x=9,y=2]{CalculatorService}
+\umlbasiccomponent[x=9,y=-2.5]{FetchService}
+\node[font=\scriptsize, below=2pt] at (ExampleHost.south) {MCP client};
+\node[font=\scriptsize, below=2pt] at (CalculatorService.south) {localhost:8000};
+\node[font=\scriptsize, below=2pt] at (FetchService.south) {localhost:8001};
+\draw[->, semithick] (ExampleHost.east) to[out=20,in=160] node[above, font=\scriptsize, sloped, pos=0.55] {POST /messages} (CalculatorService.west);
+\draw[->, semithick] (CalculatorService.west) to[out=200,in=-20] node[below, font=\scriptsize, sloped, pos=0.55] {GET /sse (open)} (ExampleHost.east);
+\draw[->, semithick] (ExampleHost.east) to[out=-20,in=160] node[above, font=\scriptsize, sloped, pos=0.55] {POST /messages} (FetchService.west);
+\draw[->, semithick] (FetchService.west) to[out=200,in=20] node[below, font=\scriptsize, sloped, pos=0.55] {GET /sse (open)} (ExampleHost.east);
+\end{tikzpicture}
+\end{center}
+
+\textit{Note: the upper arrow on each pair is a short-lived POST; the lower arrow is the long-lived SSE stream that stays open for asynchronous replies.}
 
 
 

@@ -12,16 +12,16 @@
 % \renewcommand{\umlfillcolor}{\umlthemeFill}
 
 \usepackage{tikz-uml}
-% \tikzumlset{
-%   text=\umlthemeText,
-%   draw=\umlthemeDraw,
-%   fill component=\umlthemeFill,
-%   fill class=\umlthemeFill,
-%   fill package=\umlthemeFill,
-%   fill port=\umlthemeFill,
-%   fill state=\umlthemeFill,
-%   fill assembly connector=\umlthemeFill,
-% }
+\tikzumlset{
+  text=\umlthemeText,
+  draw=\umlthemeDraw,
+  fill component=\umlthemeFill,
+  fill class=\umlthemeFill,
+  fill package=\umlthemeFill,
+  fill port=\umlthemeFill,
+  fill state=\umlthemeFill,
+  fill assembly connector=\umlthemeFill,
+}
 % Merge pgf-umlcd and tikz-uml layer stacks (each package overwrites pgfsetlayers on load)
 \pgfdeclarelayer{connectionlayers}
 \pgfsetlayers{background,connectionlayers,package0,package1,package2,fragment0,fragment1,fragment2,state0,state1,state2,component0,component1,component2,lifelines,activity,connections,main}
