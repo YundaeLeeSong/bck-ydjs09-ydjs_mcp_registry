@@ -1,0 +1,35 @@
+\newpage
+\section{UVX Guide}
+
+Using Python's toolchain runner (\textbf{uvx}) alongside Node gives you access to a completely different class of system automation tools. Running servers via \lstinline[style=inline]|uvx| provides lightning-fast local execution directly from registries.
+
+\subsection{Official File System and Git Servers}
+These servers give the agent native capabilities on the local machine without spawning blind bash wrappers.
+
+\begin{itemize}
+    \item \textbf{Git History} (\lstinline[style=inline]|mcp-server-git|): Gives the agent native capabilities to read branch histories, calculate diffs, stage files, and check commits.
+    \item \textbf{Local Filesystem} (\lstinline[style=inline]|mcp-server-filesystem|): Opens up file I/O operations (reading directories, verifying structures, changing source code) across any system root you expose to it.
+    \item \textbf{Fetch Markdown} (\lstinline[style=inline]|mcp-server-fetch|): A Python alternative to the npx fetch server.
+\end{itemize}
+
+\paragraph{Universal UVX Configuration Block.}
+When configuring these in your runtime hub (e.g., \lstinline[style=inline]|settings.json| or \lstinline[style=inline]|mcp_config.json|), you can pass arguments to specify allowed directories or execution paths. This can be combined with NPX servers in the same configuration.
+
+\begin{lstlisting}[style=json]
+{
+  "mcpServers": {
+    "git-history": {
+      "command": "uvx",
+      "args": ["mcp-server-git"]
+    },
+    "local-filesystem": {
+      "command": "uvx",
+      "args": ["mcp-server-filesystem", "/"]
+    },
+    "fetch-markdown": {
+      "command": "uvx",
+      "args": ["mcp-server-fetch"]
+    }
+  }
+}
+\end{lstlisting}

@@ -1,0 +1,61 @@
+\newpage
+\part{Standard Configurations}
+
+\section{NPX Guide}
+
+\textbf{Node Package Execute (npx)} is commonly used to run pre-built MCP servers directly from the npm registry without global installation. 
+This provides a "universal" configuration that works identically across AI agents and IDEs by using globally accessible commands.
+
+\subsection{Essential Core Servers}
+These servers represent the essential core for an AI agent's toolbelt, dividing capabilities into distinct pillars:
+
+\begin{itemize}
+    \item \textbf{Repository Control} (\lstinline[style=inline]|@modelcontextprotocol/server-github|): Allows any agent to fork, read files, check out branches, submit PRs, and review issues across codebases.
+    \item \textbf{Smart Web Discovery} (\lstinline[style=inline]|@modelcontextprotocol/server-brave-search| or \lstinline[style=inline]|exa-mcp-server|): Essential for checking modern documentation, syntax changes, or software versions without hitting context limits.
+    \item \textbf{Context Ingestion} (\lstinline[style=inline]|@modelcontextprotocol/server-fetch|): An official utility that visits any URL, strips out HTML clutter, and returns clean Markdown for the agent to process instantly.
+    \item \textbf{Live System Auditing} (\lstinline[style=inline]|@modelcontextprotocol/server-postgres|): Gives the agent schema inspection and query-running execution capabilities directly against active application layers.
+\end{itemize}
+
+\subsection{Advanced Reasoning and Memory}
+Adding these engines changes how your agent solves complex problems, moving away from blind session-by-session actions.
+
+\begin{itemize}
+    \item \textbf{Memory} (\lstinline[style=inline]|@modelcontextprotocol/server-memory|): Provides a local, graph-based knowledge storage system. It solves the amnesia problem between different context windows by letting the agent save and recall entities and structural rules persistently.
+    \item \textbf{Sequential Thinking} (\lstinline[style=inline]|@modelcontextprotocol/server-sequential-thinking|): An official reasoning orchestrator designed to stop agents from rushing into incorrect code fixes. It forces the agent to explicitly state hypotheses, challenge assumptions, and track steps before touching workspace files.
+\end{itemize}
+
+\paragraph{Universal NPX Configuration Block.}
+The following JSON block contains high-utility official distributions pulled straight from canonical registries. It can be placed in configuration files like \lstinline[style=inline]|claude_desktop_config.json|, \lstinline[style=inline]|windsurf_mcp_config.json|, or Gemini CLI's \lstinline[style=inline]|settings.json|.
+
+\begin{lstlisting}[style=json]
+{
+  "mcpServers": {
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "YOUR_TOKEN_HERE"
+      }
+    },
+    "brave-search": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-brave-search"],
+      "env": {
+        "BRAVE_API_KEY": "YOUR_API_KEY_HERE"
+      }
+    },
+    "fetch-markdown": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-fetch"]
+    },
+    "memory": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-memory"]
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+    }
+  }
+}
+\end{lstlisting}
