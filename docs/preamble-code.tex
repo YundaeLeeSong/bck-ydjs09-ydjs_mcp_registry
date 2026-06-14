@@ -122,7 +122,7 @@
 % --- HTTP trace (headers + body in exchange diagrams) ---
 \lstdefinelanguage{httptrace}{%
   alsoletter={-./},%
-  morekeywords={GET,POST,HTTP,OK,Accepted},%
+  morekeywords={GET,POST,PUT,DELETE,PATCH,HTTP,OK,Accepted,No,Found,Bad,Unauthorized,Conflict,Request},%
   morekeywords=[2]{Host,Accept,Content-Type,event,data},%
   sensitive=false,%
 }
@@ -146,6 +146,7 @@
   aboveskip=4pt,
   belowskip=4pt,
 }
+\lstnewenvironment{httplisting}{\lstset{style=http}}{}
 
 % --- Side-by-side request / response ---
 \tikzset{%

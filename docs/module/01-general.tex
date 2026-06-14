@@ -1,31 +1,110 @@
 \newpage
 \part{General Information}
-
 \textbf{Model Context Protocol (MCP)} is a standardized communication \textbf{protocol}
 that securely connects AI large language \textbf{models} (LLMs) to external
 \textbf{contexts} like codebases, databases, and files, frequently using either
 standardized input and output (\textbf{STDIO}) for local integration or
 Server-Sent Events (\textbf{HTTP/SSE}) for network-based remote communication.
 
-Regardless of the transport, all MCP clients and servers exchange \textbf{JSON-RPC 2.0}
-payloads: structured requests, responses, and notifications.
-The transport decides how those payloads are wrapped.
+
+
+
+
+
+
+
+
+\section{Transport Layer}
+
+
+\subsection{STDIO}
+
+
+\subsection{HTTP/SSE}
+
+
+
+
+
+
+
+
+
+
+\section{JSON-RPC 2.0}
+Regardless of the transport (both \textbf{STDIO} and \textbf{HTTP/SSE}), 
+all MCP clients and servers exchange \textbf{JSON-RPC 2.0} payloads: 
+structured requests, responses, and notifications. The transport decides how those payloads are wrapped.
 
 \paragraph{STDIO.}
-Locally, there are no HTTP headers.
-The host writes one JSON-RPC object per line to the server's \textbf{stdin} and reads replies from \textbf{stdout}:
+For a local server, the \textbf{host} starts a child process and communicates through pipes.
+There is no HTTP layer.
+The host writes \textbf{JSON-RPC 2.0} to the server's \textbf{stdin} and reads replies from \textbf{stdout}, one object per line.
 
+\begin{httpexchange}
 \begin{lstlisting}[style=json]
-{"jsonrpc": "2.0", "id": 1, "method": "tools/list"}
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "initialize",
+  "params": {
+    "protocolVersion": "2024-11-05",
+    "clientInfo": {
+      "name": "ExampleHost",
+      "version": "1.0"
+    }
+  }
+}
 \end{lstlisting}
+\httpmidarrows
 \begin{lstlisting}[style=json]
-{"jsonrpc": "2.0", "id": 1, "result": {"tools": [ ... ]}}
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "protocolVersion": "2024-11-05",
+    "serverInfo": {
+      "name": "CalculatorService", 
+      "version": "1.0"
+    },
+    "capabilities": {
+      "tools": { ... }
+    }
+  }
+}
 \end{lstlisting}
+\end{httpexchange}
 
 \paragraph{HTTP/SSE.}
-Over the network, the client opens \texttt{GET /sse} first.
-The server replies with \texttt{text/event-stream} and keeps that response open.
-JSON-RPC responses and notifications arrive on this stream; an early \texttt{endpoint} event names where to send outgoing messages (often \texttt{/messages}).
+\textbf{HTTP/SSE} carries MCP over the network using ordinary HTTP.
+When the MCP server runs on another machine, the MCP \textbf{client} 
+cannot use that server's \textbf{stdin} and \textbf{stdout}.
+Instead, the client opens \texttt{GET /sse} to receive a long-lived 
+\textbf{Server-Sent Events} stream from the server, 
+and sends \textbf{JSON-RPC 2.0} requests with \texttt{POST /messages}.
+
+An MCP HTTP server exposes two endpoints to achieve duplex communication 
+since Server-Sent Events (SSE) are unidirectional.
+\begin{enumerate}
+  \item \texttt{GET /sse} is the \uline{server-to-client} channel: 
+  the client opens a long-lived HTTP GET and the server \uline{keeps that response channel opened} 
+  as a pipeline where the server pushes real-time responses to the client.
+  \item \texttt{POST /messages} is the \uline{client-to-server} channel:
+  the client sends short-lived HTTP POST requests whose bodies carry JSON-RPC 2.0 frames,
+  as a pipeline where the client pushes requests to the server.
+  The POST response is only \texttt{202 Accepted} with an empty body; the JSON-RPC reply arrives later on the open \texttt{GET /sse} stream.
+\end{enumerate}
+
+
+Suppose \texttt{ExampleHost} connects to two remote MCP servers: \texttt{CalculatorService} on \texttt{localhost:8000} and \texttt{FetchService} on \texttt{localhost:8001}.
+Each server is a separate process on its own port, with its own \texttt{GET /sse} session and its own POST URL.
+
+
+\subparagraph{\texttt{CalculatorService} (\texttt{localhost:8000}).}
+\texttt{GET /sse} first establishes the \uline{server-to-client} long-lived HTTP response channel
+acting as a pipeline where the server pushes real-time responses to the client like 
+the \textbf{stdout} in the \textbf{STDIO} transport.
+\textit{Note that the \texttt{endpoint} event supplies a session URI for the MCP client to push requests to the MCP server.}
 
 \begin{httpexchange}
 \begin{lstlisting}[style=http]
@@ -39,26 +118,30 @@ HTTP/1.1 200 OK
 Content-Type: text/event-stream
 
 event: endpoint
-data: /messages?sessionId=abc123
-
-event: message
-data: {"jsonrpc": "2.0", "id": 1, "result": {"tools": [ ... ]}}
+data: /messages?sessionId=calc-ex
 \end{lstlisting}
 \end{httpexchange}
 
-Outgoing JSON-RPC requests use a separate \texttt{POST} to that message endpoint.
-The HTTP response is usually \texttt{202 Accepted} with an empty body; the matching JSON-RPC reply is delivered on the SSE stream above.
+\texttt{POST /messages} is the \uline{client-to-server} short-lived HTTP request channel 
+for the MCP client to push requests to the MCP server like the \textbf{stdin} in the \textbf{STDIO} transport.
 
 \begin{httpexchange}
 \begin{lstlisting}[style=http]
-POST /messages HTTP/1.1
+POST /messages?sessionId=calc-ex HTTP/1.1
 Host: localhost:8000
 Content-Type: application/json
 
 {
   "jsonrpc": "2.0",
   "id": 1,
-  "method": "tools/list"
+  "method": "initialize",
+  "params": {
+    "protocolVersion": "2024-11-05",
+    "clientInfo": {
+      "name": "ExampleHost",
+      "version": "1.0"
+    }
+  }
 }
 \end{lstlisting}
 \httpmidarrows
@@ -70,10 +153,45 @@ HTTP/1.1 202 Accepted
 
 
 
+Since \texttt{GET /sse} session was not closed after the \texttt{endpoint} event, the MCP server 
+can push responses to the MCP client asynchronously.
+When the server has a JSON-RPC reply ready, it pushes a \texttt{message} event with the response payload on the 
+open \texttt{GET /sse} connection like the \textbf{stdout} in the \textbf{STDIO} transport.
+
+\begin{httpexchange}
+\begin{lstlisting}[style=http]
+GET /sse HTTP/1.1
+Host: localhost:8000
+Accept: text/event-stream
+
+(... stream stays open ...)
+\end{lstlisting}
+\httpmidarrows
+\begin{lstlisting}[style=http]
+event: message
+data: {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "protocolVersion": "2024-11-05",
+    "serverInfo": {
+      "name": "CalculatorService",
+      "version": "1.0"
+    },
+    "capabilities": {
+      "tools": { ... }
+    }
+  }
+}
+\end{lstlisting}
+\end{httpexchange}
 
 
 
-
+\subparagraph{\texttt{FetchService} (\texttt{localhost:8001}).}
+\texttt{FetchService} follows the same sequence on port \texttt{8001}: its own \texttt{GET /sse} session, its own \texttt{endpoint} URI (\texttt{/messages?sessionId=fetch-ex}), its own \texttt{POST /messages} requests, and its own \texttt{message} events on the open SSE stream.
+The two servers are independent---\texttt{ExampleHost} keeps both long-lived \texttt{GET /sse} connections open at once, one per port, and routes each JSON-RPC frame to the matching session.
+The only difference in the \texttt{message} payload is \texttt{serverInfo.name}: \texttt{FetchService} instead of \texttt{CalculatorService}.
 
 
 
@@ -82,25 +200,20 @@ HTTP/1.1 202 Accepted
 
 
 \section{MCP Hub}
-
 People use \textbf{MCP Hub} in two different senses. The distinction matters when you read docs or community posts.
-
 \subsection{Runtime Hub}
-
-On your machine, the host or \textbf{runtime hub} inlcudes the following:
+On your machine, the host or \textbf{runtime hub} includes the following:
 \begin{enumerate}
     \item Claude Desktop (CLI)
     \item Cursor (IDE)
     \item Windsurf (IDE)
-    \item any another CLI or IDE AI agents
-\end{enumerate} 
+    \item any other CLI or IDE AI agents
+\end{enumerate}
 The \textbf{host} reads one configuration file, \uline{starts each MCP server as a background process}, 
 and keeps every client session alive at the same time.
 When the \textbf{model} calls a \textbf{tool}, the host routes the \textbf{JSON-RPC} request to the right server and passes the result back into the conversation.
 In short, the host is the local \textbf{orchestrator} that wires many servers into a single agent session.
-
 \subsection{Discovery Hub}
-
 The same label is also used for a \textbf{public registry} or marketplace, like npm or Docker Hub, where you browse and install pre-built servers.
 Sites such as \url{https://smithery.ai} and \url{https://mcp-get.com} catalog community integrations (Slack, GitHub, memory stores, and more), often with a one-command install.
 Discovery hub \uline{helps you find servers, not run them}. Execution still happens in your host.
