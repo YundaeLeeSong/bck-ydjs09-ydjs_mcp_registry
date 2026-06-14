@@ -842,6 +842,11 @@ call :Install-App "AutoHotkey.AutoHotkey" "AutoHotkey" "AutoHotkey" "AutoHotkey"
 @REM if %FOUND_DIR% EQU 1 call :Prompt-Path "AutoHotkey" "\v2"
 
 @REM ---------------------------------------------------------------------------
+@REM Platform Independent - Node.js native tools
+@REM ---------------------------------------------------------------------------
+call :Install-App "OpenJS.NodeJS.LTS" "Node.js (LTS)" "node" "nodejs"
+
+@REM ---------------------------------------------------------------------------
 @REM Platform Independent - Python native tools
 @REM ---------------------------------------------------------------------------
 call :Install-App "astral-sh.uv" "uv" "uv" "uv"

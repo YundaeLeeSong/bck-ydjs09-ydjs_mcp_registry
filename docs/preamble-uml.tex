@@ -1,27 +1,130 @@
 % UML diagrams (load after \usepackage{xcolor}, with preamble-code.tex).
+%
+%   Shared theme  -> \umltheme*
+%   Deployment    -> \umldeviceframe, uml/artifact, uml/deploy link, ...
+%   Component     -> \umlbasiccomponent (tikz-uml) + \umlprovidedinterface / \umlrequiredinterface
+
 \usepackage{pgf-umlsd}
+\usepackage{tikz-uml}
+\usepackage{pgf-umlcd} % IBM standard
+% \renewcommand{\umltextcolor}{\umlthemeText}
+% \renewcommand{\umldrawcolor}{\umlthemeDraw}
+% \renewcommand{\umlfillcolor}{\umlthemeFill}
+\usepackage{tikz-uml}
+% \tikzumlset{
+%   text=\umlthemeText,
+%   draw=\umlthemeDraw,
+%   fill component=\umlthemeFill,
+%   fill class=\umlthemeFill,
+%   fill package=\umlthemeFill,
+%   fill port=\umlthemeFill,
+%   fill state=\umlthemeFill,
+%   fill assembly connector=\umlthemeFill,
+% }
+% Merge pgf-umlcd and tikz-uml layer stacks (each package overwrites pgfsetlayers on load)
+\pgfdeclarelayer{connectionlayers}
+\pgfsetlayers{background,connectionlayers,package0,package1,package2,fragment0,fragment1,fragment2,state0,state1,state2,component0,component1,component2,lifelines,activity,connections,main}
+\usetikzlibrary{fit, positioning, calc, backgrounds, arrows.meta}
+
+
+
+
+
+
+
 
 % --- UML color theme: edit these three values to restyle all diagrams ---
 \newcommand{\umlthemeText}{black}
 \newcommand{\umlthemeDraw}{black!70}
 \newcommand{\umlthemeFill}{white}
+\colorlet{umldevicebg}{black!6}
 
-\usepackage{pgf-umlcd} % IBM standard
-% \renewcommand{\umltextcolor}{\umlthemeText}
-% \renewcommand{\umldrawcolor}{\umlthemeDraw}
-% \renewcommand{\umlfillcolor}{\umlthemeFill}
 
-\usepackage{tikz-uml}
-\tikzumlset{
-  text=\umlthemeText,
-  draw=\umlthemeDraw,
-  fill component=\umlthemeFill,
-  fill class=\umlthemeFill,
-  fill package=\umlthemeFill,
-  fill port=\umlthemeFill,
-  fill state=\umlthemeFill,
-  fill assembly connector=\umlthemeFill,
+
+
+
+% =============================================================================
+% Deployment diagrams  (01-general.tex: \umldeviceframe, uml/artifact nodes)
+% =============================================================================
+\tikzset{%
+  uml/device frame/.style={%
+    draw=\umlthemeDraw, fill=umldevicebg, line width=0.9pt, rounded corners=2pt,
+  },%
+  uml/artifact/.style={%
+    draw=\umlthemeDraw, fill=\umlthemeFill, line width=0.8pt,
+    font=\small, align=center, inner sep=6pt,
+    minimum width=2.6cm, minimum height=0.95cm,
+  },%
+  uml/device title/.style={%
+    font=\scriptsize, anchor=north, align=center, text=\umlthemeText,
+  },%
+  uml/deploy link/.style={%
+    -{Stealth[length=2mm,width=1.6mm]}, line width=0.75pt, draw=\umlthemeDraw,
+  },%
+  uml/deploy depends/.style={%
+    -{Stealth[length=2mm,width=1.6mm]}, dashed, line width=0.65pt, draw=\umlthemeDraw,
+  },%
+  uml/network edge/.style={%
+    dashed, line width=0.85pt, draw=black!45,
+  },%
 }
-% Merge pgf-umlcd and tikz-uml layer stacks (each package overwrites pgfsetlayers on load)
-\pgfdeclarelayer{connectionlayers}
-\pgfsetlayers{background,connectionlayers,package0,package1,package2,fragment0,fragment1,fragment2,state0,state1,state2,component0,component1,component2,lifelines,activity,connections,main}
+
+\newcommand{\umldevicetitle}[1]{%
+  \begin{tabular}{@{}c@{}}%
+    \texttt{<<device>>}\\%
+    :#1%
+  \end{tabular}%
+}
+
+% #1 = SW, #2 = NE, #3 = device name
+\newcommand{\umldeviceframe}[3]{%
+  \draw[uml/device frame] (#1) rectangle (#2);
+  \coordinate (uml@frame-nw) at (#1 |- #2);
+  \node[uml/device title] at ($(uml@frame-nw)!0.5!(#2)$) [yshift=-9pt] {\umldevicetitle{#3}};
+}
+
+
+
+
+
+
+
+
+
+% =============================================================================
+% Component diagrams  (\umlbasiccomponent + interface overrides below)
+% Usage:
+%   \umlprovidedinterface[interface=JSON-RPC]{Listener}
+%   \umlrequiredinterface{Caller}{Listener}
+% =============================================================================
+\tikzset{%
+  uml/comp if line/.style={%
+    line width=0.9pt, draw=\umlthemeDraw,
+  },%
+  uml/comp if label/.style={%
+    font=\small, anchor=south, text=\umlthemeText, inner sep=1pt,
+  },%
+}
+
+\newcommand{\umlCompIfStem}{1.6cm}    % listener: box -> O
+\newcommand{\umlCompIfReqStem}{6.0cm} % caller:   box -> (
+\newcommand{\umlCompIfBall}{0.18cm}
+\newcommand{\umlCompIfSocket}{0.18cm}
+\newcommand{\umlCompIfLabelY}{0.55cm}
+
+\renewcommand{\umlprovidedinterface}[2][]{%
+  \def\uml@interfacelabel{}%
+  \IfSubStr{#1}{interface=}{%
+    \StrBehind{#1}{interface=}[\uml@interfacelabel]%
+  }{}%
+  \coordinate (#2-prov) at ($(#2.west)+(-\umlCompIfStem,0)$);
+  \draw[uml/comp if line] (#2.west) -- ($(#2-prov)!{\umlCompIfBall}!(#2.west)$);
+  \filldraw[draw=\umlthemeDraw, fill=\umlthemeFill, line width=0.9pt] (#2-prov) circle (\umlCompIfBall);
+  \node[uml/comp if label] at ($(#2-prov)+(0,\umlCompIfLabelY)$) {\uml@interfacelabel};
+}
+
+\renewcommand{\umlrequiredinterface}[2]{%
+  \coordinate (#2-sock) at ($(#1.east)!{\umlCompIfReqStem}!(#2-prov)$);
+  \draw[uml/comp if line] (#1.east) -- ($(#2-sock)!{\umlCompIfSocket}!(#1.east)$);
+  \draw[uml/comp if line] (#2-sock) ++(0,\umlCompIfSocket) arc (90:270:\umlCompIfSocket);
+}
