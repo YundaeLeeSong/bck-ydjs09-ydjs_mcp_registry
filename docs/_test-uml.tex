@@ -1,0 +1,35 @@
+\documentclass{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{xcolor}
+\input{preamble-uml.tex}
+\tikzumlset{fill component=white, draw=black!70, text=black, font=\small}
+
+\begin{document}
+
+\section{STDIO test}
+\begin{center}
+\begin{tikzpicture}
+\umlbasiccomponent[x=0,y=0.6]{Host}
+\umlbasiccomponent[x=8,y=0.6]{CalculatorService}
+\draw[-Stealth, semithick] (Host-east) -- node[above, font=\scriptsize, align=center] {stdin\\JSON-RPC request} (CalculatorService-west);
+\draw[-Stealth, semithick] (CalculatorService-west) -- node[below, font=\scriptsize, align=center] {stdout\\JSON-RPC response} (Host-east);
+\draw[-Stealth, dashed] (Host.south) -- ++(0,-0.8) -| node[near start, left, font=\scriptsize] {spawn} (CalculatorService.south);
+\end{tikzpicture}
+\end{center}
+
+\section{HTTP test}
+\begin{center}
+\begin{tikzpicture}
+\umlbasiccomponent[x=0,y=0]{ExampleHost}
+\umlbasiccomponent[x=9,y=2]{CalculatorService\\:8000}
+\umlbasiccomponent[x=9,y=-2.5]{FetchService\\:8001}
+\draw[-Stealth, semithick] (ExampleHost-east) to[out=15,in=165] node[above, font=\scriptsize, sloped, pos=0.55] {POST /messages} (CalculatorService-west);
+\draw[-Stealth, semithick] (CalculatorService-west) to[out=195,in=-15] node[below, font=\scriptsize, sloped, pos=0.55] {GET /sse (open)} (ExampleHost-east);
+\draw[-Stealth, semithick] (ExampleHost-east) to[out=-15,in=165] node[above, font=\scriptsize, sloped, pos=0.55] {POST /messages} (FetchService-west);
+\draw[-Stealth, semithick] (FetchService-west) to[out=195,in=15] node[below, font=\scriptsize, sloped, pos=0.55] {GET /sse (open)} (ExampleHost-east);
+\end{tikzpicture}
+\end{center}
+
+\end{document}
