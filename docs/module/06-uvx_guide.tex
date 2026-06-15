@@ -1,0 +1,80 @@
+\newpage
+\section{UVX Guide}
+
+Using Python's toolchain runner (\textbf{uvx}) alongside Node gives you access to a completely different class of system automation tools. Running servers via \lstinline[style=inline]|uvx| provides lightning-fast local execution directly from registries.
+
+\subsection{Official File System and Git Servers}
+These servers give the agent native capabilities on the local machine without spawning blind bash wrappers.
+
+\begin{itemize}
+    \item \textbf{Git History} (\lstinline[style=inline]|mcp-server-git|): Gives the agent native capabilities to read branch histories, calculate diffs, stage files, and check commits.
+    \item \textbf{Local Filesystem} (\lstinline[style=inline]|mcp-server-filesystem|): Opens up file I/O operations (reading directories, verifying structures, changing source code) across any system root you expose to it.
+    \item \textbf{Fetch Markdown} (\lstinline[style=inline]|mcp-server-fetch|): A Python alternative to the npx fetch server.
+\end{itemize}
+
+\subsection{Local Custom Servers with Editable Installs}
+Unlike Node, where \lstinline[style=inline]|npm link| is required for seamless path resolution, \textbf{uv} natively understands local editable development and workspaces. You can tell \lstinline[style=inline]|uvx| to run your local packages directly via their file paths without needing a separate global linking step.
+
+\paragraph{Setting up the uv Workspace.}
+Your root \lstinline[style=inline]|pyproject.toml| should explicitly declare your subdirectories as part of a \textbf{uv} workspace:
+
+\begin{lstlisting}[style=toml]
+[project]
+name = "my-mcp-suite"
+version = "0.1.0"
+requires-python = ">=3.10"
+
+[tool.uv.workspace]
+members = ["packages/*"]
+\end{lstlisting}
+
+Inside your server subdirectory's \lstinline[style=inline]|pyproject.toml|, ensure you expose the script entry point:
+
+\begin{lstlisting}[style=toml]
+[project.scripts]
+my-filesystem-package-name = "service_filesystem.main:run"
+\end{lstlisting}
+
+\paragraph{Running Editable Installs.}
+Configure your agent to run the server using the \lstinline[style=inline]|--with editable+| flag. When the agent triggers the server, \lstinline[style=inline]|uv| will instantly run the live code from your directory, applying code changes instantly without rebuilds.
+
+\begin{lstlisting}[style=json]
+{
+  "mcpServers": {
+    "my-local-filesystem": {
+      "command": "uvx",
+      "args": [
+        "--with",
+        "editable+/absolute/path/to/my-mcp-suite/packages/service-filesystem",
+        "my-filesystem-package-name"
+      ]
+    }
+  }
+}
+\end{lstlisting}
+
+\subsection{Universal UVX Configuration Block}
+When configuring these in your runtime hub (e.g., \lstinline[style=inline]|settings.json| or \lstinline[style=inline]|mcp_config.json|), you can seamlessly combine your local editable Python packages alongside official distributions.
+
+\begin{lstlisting}[style=json]
+{
+  "mcpServers": {
+    "git-history": {
+      "command": "uvx",
+      "args": ["mcp-server-git"]
+    },
+    "local-filesystem": {
+      "command": "uvx",
+      "args": ["mcp-server-filesystem", "/"]
+    },
+    "my-local-filesystem": {
+      "command": "uvx",
+      "args": [
+        "--with",
+        "editable+$WORKSPACE_DIR/packages/service-filesystem",
+        "my-filesystem-package-name"
+      ]
+    }
+  }
+}
+\end{lstlisting}

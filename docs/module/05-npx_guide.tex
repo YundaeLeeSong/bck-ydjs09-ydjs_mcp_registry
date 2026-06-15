@@ -1,5 +1,4 @@
 \newpage
-\part{Standard Configurations}
 
 \section{NPX Guide}
 
@@ -24,8 +23,39 @@ Adding these engines changes how your agent solves complex problems, moving away
     \item \textbf{Sequential Thinking} (\lstinline[style=inline]|@modelcontextprotocol/server-sequential-thinking|): An official reasoning orchestrator designed to stop agents from rushing into incorrect code fixes. It forces the agent to explicitly state hypotheses, challenge assumptions, and track steps before touching workspace files.
 \end{itemize}
 
-\paragraph{Universal NPX Configuration Block.}
-The following JSON block contains high-utility official distributions pulled straight from canonical registries. It can be placed in configuration files like \lstinline[style=inline]|claude_desktop_config.json|, \lstinline[style=inline]|windsurf_mcp_config.json|, or Gemini CLI's \lstinline[style=inline]|settings.json|.
+\subsection{Local Custom Servers}
+When building your own MCP servers (e.g., in a local monorepo suite), you can configure the AI agent to execute your local build files directly.
+
+\paragraph{Using Absolute Paths.}
+You can point Node directly to the built \lstinline[style=inline]|index.js| of your custom packages:
+
+\begin{lstlisting}[style=json]
+{
+  "mcpServers": {
+    "my-custom-filesystem": {
+      "command": "node",
+      "args": ["/absolute/path/to/my-mcp-suite/packages/service-filesystem/build/index.js"]
+    }
+  }
+}
+\end{lstlisting}
+
+\paragraph{Seamless Portability with npm link.}
+Absolute paths can break if you move configurations between different computers (e.g., Windows at home vs. macOS at work). By running \lstinline[style=inline]|npm link| inside your local package directory, you expose it to your global environment. You can then configure your agent to call it identically to a public registry package:
+
+\begin{lstlisting}[style=json]
+{
+  "mcpServers": {
+    "my-custom-filesystem": {
+      "command": "npx",
+      "args": ["-y", "my-filesystem-package-name"]
+    }
+  }
+}
+\end{lstlisting}
+
+\subsection{Universal NPX Configuration Block}
+The following JSON block demonstrates combining high-utility official distributions with your custom, locally-linked tools. It can be placed in configuration files like \lstinline[style=inline]|claude_desktop_config.json|, \lstinline[style=inline]|windsurf_mcp_config.json|, or Gemini CLI's \lstinline[style=inline]|settings.json|.
 
 \begin{lstlisting}[style=json]
 {
@@ -37,24 +67,13 @@ The following JSON block contains high-utility official distributions pulled str
         "GITHUB_PERSONAL_ACCESS_TOKEN": "YOUR_TOKEN_HERE"
       }
     },
-    "brave-search": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-brave-search"],
-      "env": {
-        "BRAVE_API_KEY": "YOUR_API_KEY_HERE"
-      }
-    },
-    "fetch-markdown": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-fetch"]
-    },
     "memory": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-memory"]
     },
-    "sequential-thinking": {
+    "my-custom-filesystem": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+      "args": ["-y", "my-filesystem-package-name"]
     }
   }
 }

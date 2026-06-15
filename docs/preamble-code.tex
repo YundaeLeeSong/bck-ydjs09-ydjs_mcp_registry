@@ -54,6 +54,22 @@
   stringstyle=\color{lststr},
 }
 
+% --- TOML (pyproject.toml, uv workspace) ---
+\lstdefinelanguage{TOML}{%
+  alsoletter={-.*},%
+  morestring=[b]",%
+  sensitive=false,%
+  morecomment=[l]\#,%
+  morekeywords={true,false},%
+  moredelim=[is][\bfseries\color{lsthdr}]{[}{]},%
+}
+\lstdefinestyle{toml}{%
+  style=mcpblock,
+  language=TOML,
+  keywordstyle=\bfseries\color{lstkw},
+  stringstyle=\color{lststr},
+}
+
 % --- Bash / shell (extends listings bash: commands, flags, npm scopes) ---
 \lstdefinelanguage{shellcmd}[]{bash}{%
   morekeywords={npx,npm,uvx,pip,uv,python,node,curl,git,docker,run},%

@@ -1,0 +1,43 @@
+\newpage
+\part{Standard Configurations}
+
+\section{Overview}
+
+When configuring your AI agents (such as Claude Desktop, Cursor, Windsurf, or Gemini CLI), using official distributions pulled from canonical registries ensures a robust and capable setup. Depending on your toolchain, you can run these servers using Node's \lstinline[style=inline]|npx| or Python's \lstinline[style=inline]|uvx|.
+
+Below is a summary of the most useful official MCP servers. Note that some functionalities (like filesystem and fetch) have implementations in both ecosystems, while others are unique to one.
+
+\begin{paratable}
+\footnotesize
+\begin{tabularx}{\linewidth}{|>{\raggedright\arraybackslash}p{0.16\textwidth}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{Capability} & \textbf{NPX (Node.js)} & \textbf{UVX (Python)} \\
+\hline
+\textbf{Repository Control} &
+\lstinline[style=inline]|@modelcontextprotocol/server-github| &
+\lstinline[style=inline]|mcp-server-git| (local Git history) \\
+\hline
+\textbf{File System} &
+\textit{N/A} &
+\lstinline[style=inline]|mcp-server-filesystem| \\
+\hline
+\textbf{Fetch (HTML to MD)} &
+\lstinline[style=inline]|@modelcontextprotocol/server-fetch| &
+\lstinline[style=inline]|mcp-server-fetch| \\
+\hline
+\textbf{Web Search} &
+\lstinline[style=inline]|@modelcontextprotocol/server-brave-search|\newline
+\lstinline[style=inline]|exa-mcp-server| &
+\textit{N/A} \\
+\hline
+\textbf{Database / Auditing} &
+\lstinline[style=inline]|@modelcontextprotocol/server-postgres| &
+\lstinline[style=inline]|mcp-server-sqlite| \\
+\hline
+\textbf{Reasoning \& Memory} &
+\lstinline[style=inline]|@modelcontextprotocol/server-sequential-thinking|\newline
+\lstinline[style=inline]|@modelcontextprotocol/server-memory| &
+\textit{N/A} \\
+\hline
+\end{tabularx}
+\end{paratable}
