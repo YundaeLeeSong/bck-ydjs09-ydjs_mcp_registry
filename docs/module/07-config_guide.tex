@@ -3,10 +3,23 @@
 
 To deploy a robust, universal AI agent toolkit, you can combine the best servers from both the Node (npx) and Python (uvx) ecosystems into a single master configuration block. 
 
-When functionalities overlap (such as the \lstinline[style=inline]|fetch| capability), the Node implementation (\lstinline[style=inline]|@modelcontextprotocol/server-fetch|) is typically chosen due to its widespread adoption and canonical support, while \lstinline[style=inline]|uvx| is preferred for native local system tasks (like file I/O and Git history).
+When functionalities overlap (such as the \lstinline[style=inline]|fetch| capability), 
+the Node implementation (\lstinline[style=inline]|@modelcontextprotocol/server-fetch|) is 
+typically chosen due to its widespread adoption and canonical support, 
+while \lstinline[style=inline]|uvx| is preferred for native local system tasks 
+(like file I/O and Git history).
 
 \subsection{The Universal JSON Profile}
-This configuration aggregates repository control, system auditing, web discovery, and reasoning. Replace the placeholder environment variables with your actual API keys and local paths.
+This configuration aggregates repository control, system auditing, web discovery, 
+and reasoning. Many modern AI clients (like the Gemini CLI) support expanding local 
+environment variables directly within the JSON block using the 
+\lstinline[style=inline]|${ENV_VAR_NAME}| syntax, ensuring you don't leak secrets into your config files. 
+
+\textit{Note: If a referenced environment variable is not defined on your local machine, 
+the AI client will typically fail to start that specific MCP server (often logging a connection or authentication error), 
+while the rest of the correctly configured servers will continue to function normally. 
+Ensure these variables are exported in your shell profile 
+(e.g., \lstinline[style=inline]|.bashrc| or \lstinline[style=inline]|.zshrc|) before launching the client.}
 
 \begin{lstlisting}[style=json]
 {
@@ -14,7 +27,7 @@ This configuration aggregates repository control, system auditing, web discovery
     "github": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-github"],
-      "env": { "GITHUB_PERSONAL_ACCESS_TOKEN": "YOUR_TOKEN" }
+      "env": { "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}" }
     },
     "git-history": {
       "command": "uvx",
@@ -31,17 +44,17 @@ This configuration aggregates repository control, system auditing, web discovery
     "brave-search": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-brave-search"],
-      "env": { "BRAVE_API_KEY": "YOUR_KEY" }
+      "env": { "BRAVE_API_KEY": "${BRAVE_API_KEY}" }
     },
     "postgres-db": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-postgres"],
       "env": {
-        "PGHOST": "localhost",
-        "PGPORT": "5432",
-        "PGDATABASE": "your_db",
-        "PGUSER": "your_user",
-        "PGPASSWORD": "your_password"
+        "PGHOST": "${PGHOST}",
+        "PGPORT": "${PGPORT}",
+        "PGDATABASE": "${PGDATABASE}",
+        "PGUSER": "${PGUSER}",
+        "PGPASSWORD": "${PGPASSWORD}"
       }
     },
     "memory": {
@@ -51,6 +64,10 @@ This configuration aggregates repository control, system auditing, web discovery
     "sequential-thinking": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+    },
+    "large-file": {
+      "command": "npx",
+      "args": ["-y", "@willianpinho/large-file-mcp"]
     }
   }
 }
