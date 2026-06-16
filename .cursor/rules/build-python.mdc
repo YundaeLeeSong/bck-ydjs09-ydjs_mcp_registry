@@ -3,7 +3,7 @@ description: Python execution via uv. Use when running Python scripts, pytest, o
 globs: **/*.py, **/pyproject.toml, uv/**, uv.lock
 alwaysApply: false
 ---
-# Execute Python
+# Build Python
 
 - **`uv` is used to run Python** - `uv run` is always used for scripts, tools, and tests.
   - Examples are `uv run python script.py`, `uv run pytest`, and `uv run poe sync-deps`.

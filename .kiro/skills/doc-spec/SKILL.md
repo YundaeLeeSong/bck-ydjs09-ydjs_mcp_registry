@@ -44,7 +44,7 @@ Pipeline: **Read -> Plan -> Write -> Verify**
 - Read raw content: `read_text_file` or `large-file` if large (~8k+ tokens)
 - Find canonical spec URL: `web-search` (e.g. `"GitHub Flavored Markdown spec"`, `"LaTeX article sectioning"`)
 - Fetch spec: `fetch`
-- Search fallback per `analysis-search` rule: `iask-search`, `monica-search`
+- Search fallback per `plan-search` rule: `iask-search`, `monica-search`
 
 ### 2. Plan
 

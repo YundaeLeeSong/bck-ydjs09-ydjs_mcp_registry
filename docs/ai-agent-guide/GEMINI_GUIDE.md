@@ -18,8 +18,8 @@ Gemini CLI sources its configuration differently from an editor-based agent, so 
 | Response Voice | Sets the formal third-person passive register for every reply |
 | Search Strategy | Defines the search tier order and the handoff to research |
 | Research Workflow | Triages, fetches, synthesizes, and grounds findings after a search |
-| Python Execution | Routes all Python execution through `uv run` |
-| Node Execution | Routes all Node tooling through `npx` |
+| Python Build | Routes all Python execution through `uv run` |
+| Node Build | Routes all Node tooling through `npx` |
 
 ### Skills (`.gemini/skills/`)
 
@@ -79,14 +79,14 @@ Example request - "Find the current FastAPI lifespan API and update the server a
 
 ### Running Python
 
-Any Python execution is routed through `uv` by the Python Execution rule. Scripts, tests, and tools are launched with `uv run`, and bare `python`, `python3`, or `pip` are not used. This matches the uv workspace described in the project README.
+Any Python execution is routed through `uv` by the Python Build rule. Scripts, tests, and tools are launched with `uv run`, and bare `python`, `python3`, or `pip` are not used. This matches the uv workspace described in the project README.
 
 Example request - "Run the calculator tests."
 Resulting command form - `uv run pytest`, or `uv run poe sync-deps` after new imports are added.
 
 ### Running Node tooling
 
-Node-packaged binaries are run through `npx` by the Node Execution rule, so linters, type checkers, and MCP servers are resolved locally or fetched on the fly rather than assumed global.
+Node-packaged binaries are run through `npx` by the Node Build rule, so linters, type checkers, and MCP servers are resolved locally or fetched on the fly rather than assumed global.
 
 Example request - "Lint the TypeScript files."
 Resulting command form - `npx eslint .` or `npx tsc`.

@@ -50,7 +50,7 @@ Pipeline: **Read -> Plan -> Write -> Verify**
 - Read the unorganized code (`read_text_file` or `large-file` if large)
 - Detect language and intended stack
 - Fetch official layout docs: `web-search` + `fetch` (e.g. `"uv workspace layout"`, `"hatchling src layout"`, `"npm package.json structure"`, `"Maven standard directory layout"`)
-- Search fallback per `analysis-search` rule
+- Search fallback per `plan-search` rule
 
 ### 2. Plan
 
@@ -61,7 +61,7 @@ Pipeline: **Read -> Plan -> Write -> Verify**
 ### 3. Write
 
 - Create directory structure and config first, then place code
-- Follow the stack's official layout and toolchain (e.g. Python `uv` workspace with `hatchling` and `src/<package>/` per `execute-python` rule, Node `package.json` with `npx` tooling per `execute-node` rule)
+- Follow the stack's official layout and toolchain (e.g. Python `uv` workspace with `hatchling` and `src/<package>/` per `build-python` rule, Node `package.json` with `npx` tooling per `build-node` rule)
 
 ### 4. Verify
 

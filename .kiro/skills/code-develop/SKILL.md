@@ -57,7 +57,7 @@ Pipeline: **Read -> Plan -> Write -> Verify**
 
 - Read the target area and **neighboring modules** to learn existing architecture and conventions
 - Identify the design problem: responsibilities, coupling, duplication, missing extension points
-- Confirm the intended principle or pattern against its official definition (`web-search`, `fetch`; search fallback per `analysis-search` rule) so usage matches purpose
+- Confirm the intended principle or pattern against its official definition (`web-search`, `fetch`; search fallback per `plan-search` rule) so usage matches purpose
 - Optional: `git-history` for why the current design exists
 
 ### 2. Plan
@@ -83,7 +83,7 @@ Pipeline: **Read -> Plan -> Write -> Verify**
 
 ### 4. Verify
 
-- Run the project's tests and linter with the language's toolchain (e.g. per `execute-python` or `execute-node` rule) to confirm behavior is preserved
+- Run the project's tests and linter with the language's toolchain (e.g. per `build-python` or `build-node` rule) to confirm behavior is preserved
 - Check that each numbered comment still matches the code it annotates
 - Confirm the applied pattern reads as its canonical form, not a partial imitation
 

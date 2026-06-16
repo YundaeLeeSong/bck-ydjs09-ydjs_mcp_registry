@@ -63,7 +63,7 @@ Pipeline: **Read -> Plan -> Write -> Verify**
 
 ### 4. Verify
 
-- Run the touched package's tests or linter with the language's toolchain (e.g. Python per `execute-python` rule, TypeScript/JavaScript per `execute-node` rule)
+- Run the touched package's tests or linter with the language's toolchain (e.g. Python per `build-python` rule, TypeScript/JavaScript per `build-node` rule)
 - Confirm snippet is reachable from intended entry point
 
 ## MCP Servers

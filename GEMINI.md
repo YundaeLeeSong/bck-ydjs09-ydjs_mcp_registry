@@ -32,13 +32,13 @@ When search results need processing before action, these phases are worked in or
 3. **Synthesize** - reasoning is done with `sequential-thinking` before writing. Conflicts and version mismatches are flagged, confirmed is separated from inferred, and an outline is drafted then revised.
 4. **Ground** - each claim is tied to a source and version, residual uncertainty is stated plainly, and a search tier is escalated if grounding fails.
 
-## Python Execution (`uv`)
+## Python Build (`uv`)
 
 - `uv run` is ALWAYS used to execute Python scripts, tools, and tests. Example - `uv run python script.py`, `uv run pytest`.
 - `python`, `python3`, or `pip` are NEVER used directly. The workspace relies on `uv` for isolated and correct dependency management.
 - This repository is a `uv` workspace. `uv sync` and `uv run --directory <path> python ...` are preferred per the project layout.
 
-## Node Execution (`npx`)
+## Node Build (`npx`)
 
 - npm-packaged binaries are ALWAYS prefixed with `npx`. Example - `npx eslint .`, `npx tsc`, `npx jest`.
 - npm packages are NEVER assumed to be installed globally, so commands run against the local `node_modules` install or are fetched on the fly.
