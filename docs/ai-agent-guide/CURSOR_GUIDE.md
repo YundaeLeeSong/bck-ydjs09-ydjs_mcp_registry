@@ -141,6 +141,17 @@ When a file is too large to read at once, the `large-file` server provides a sum
 
 Durable facts gathered during a session are stored and recalled through the `memory` server, so repeated context does not have to be restated.
 
+## Turning MCP servers on and off
+
+`.cursor/mcp.json` defines ten servers, of which the nine listed above are active. Cursor reads no enable or disable flag from the file itself: the documented fields for a STDIO server are `type`, `command`, `args`, `env`, and `envFile`, and none of them switches a server on or off. Control therefore happens in one of two places.
+
+- **The interface toggle.** A server is switched on or off from Settings (`Ctrl+Shift+J`) under Features then Model Context Protocol, where each server carries its own switch. A server that is switched off does not start and its tools never appear in chat. This state is stored per workspace inside Cursor's own settings rather than in `.cursor/mcp.json`, so it is not shared through version control.
+- **The file itself.** Removing a server's block from `.cursor/mcp.json` drops it entirely. This is the only on/off change that travels with the repository, since the interface toggle does not.
+
+The tenth server, `postgres-db`, is defined in the file but held off through the interface toggle, since it needs a reachable database supplied through the connection variables `PGHOST`, `PGPORT`, `PGDATABASE`, `PGUSER`, and `PGPASSWORD`. It is switched on once those variables point at a live database. The same pattern fits any server whose credentials are not yet present: the definition stays in the file while the toggle holds it off, which avoids editing the configuration each time a tool is paused or resumed.
+
+A `"disabled": true` flag, as used by some other tools, is not part of Cursor's schema. Such a key is parsed as an unknown field and ignored, so it is left out of `.cursor/mcp.json` and the interface toggle is used instead.
+
 ## How the pieces chain together
 
 Several parts of the configuration are designed to run in sequence.
