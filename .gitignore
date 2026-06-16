@@ -1,11 +1,11 @@
-# --- Generated from ./.gitignores on Tue Jun 16 14:24:16 2026 ---
+# --- Generated from ./.gitignores on Tue Jun 16 15:12:06 2026 ---
 
 #############################################
 # A.gitignore
 #############################################
 #################### ALL PURPOSE GITIGNORE ####################
 project2305*
-_*/
+_*
 tmp*/
 remote*/
 VSLive*/
