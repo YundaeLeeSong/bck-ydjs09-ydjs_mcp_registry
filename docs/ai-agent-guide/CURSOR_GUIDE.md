@@ -34,7 +34,7 @@ This guide describes how an AI agent behaves inside this repository once the cus
 | `local-filesystem` | Reads, writes, edits, and searches files |
 | `git-history` | Inspects commit history and blame |
 | `github` | Works with GitHub issues, pull requests, and repositories |
-| `fetch-markdown` | Pulls a web page or spec as Markdown |
+| `fetch` | Pulls a web page or spec as Markdown |
 | `web-search` | Runs DuckDuckGo web search |
 | `sequential-thinking` | Structured step-by-step reasoning |
 | `memory` | Stores and recalls facts across a session |
@@ -60,7 +60,7 @@ Two parts of the configuration apply to every interaction regardless of the requ
 
 When current information about an API, library, or specification is needed, the `analysis-search` rule sets the order of search. Native and web search are tried first, MCP search fallbacks follow, and DuckDuckGo through the `web-search` server widens coverage when results are thin. Official documentation pages are opened last for verification.
 
-When the results need real processing rather than a single fact, the `analysis-research` rule takes over. Sources are triaged by authority and recency, the canonical page is pulled in full with `fetch-markdown`, the findings are reasoned through with `sequential-thinking`, and each claim is tied back to a source before any file is written.
+When the results need real processing rather than a single fact, the `analysis-research` rule takes over. Sources are triaged by authority and recency, the canonical page is pulled in full with `fetch`, the findings are reasoned through with `sequential-thinking`, and each claim is tied back to a source before any file is written.
 
 Example request - "Find the current FastAPI lifespan API and update the server accordingly."
 

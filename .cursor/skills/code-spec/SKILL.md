@@ -49,7 +49,7 @@ Pipeline: **Read -> Plan -> Write -> Verify**
 
 - Read the unorganized code (`read_text_file` or `large-file` if large)
 - Detect language and intended stack
-- Fetch official layout docs: `web-search` + `fetch-markdown` (e.g. `"uv workspace layout"`, `"hatchling src layout"`, `"npm package.json structure"`, `"Maven standard directory layout"`)
+- Fetch official layout docs: `web-search` + `fetch` (e.g. `"uv workspace layout"`, `"hatchling src layout"`, `"npm package.json structure"`, `"Maven standard directory layout"`)
 - Search fallback per `analysis-search` rule
 
 ### 2. Plan
@@ -73,7 +73,7 @@ Pipeline: **Read -> Plan -> Write -> Verify**
 | Server | Tools |
 |--------|-------|
 | `web-search` | `web-search`, `iask-search`, `monica-search` |
-| `fetch-markdown` | `fetch` |
+| `fetch` | `fetch` |
 | `sequential-thinking` | `sequentialthinking` |
 | `large-file` | `get_file_summary`, `read_large_file_chunk` |
 | `local-filesystem` | `read_text_file`, `write_file`, `create_directory`, `search_files` |

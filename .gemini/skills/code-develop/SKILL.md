@@ -49,7 +49,7 @@ Pipeline: **Read -> Plan -> Write -> Verify**
 
 - Read the target area and **neighboring modules** to learn existing architecture and conventions
 - Identify the design problem: responsibilities, coupling, duplication, missing extension points
-- Confirm the intended principle or pattern against its official definition (`web-search`, `fetch-markdown`; search fallback per the search strategy in `GEMINI.md`) so usage matches purpose
+- Confirm the intended principle or pattern against its official definition (`web-search`, `fetch`; search fallback per the search strategy in `GEMINI.md`) so usage matches purpose
 - Optional: `git-history` for why the current design exists
 
 ### 2. Plan
@@ -87,7 +87,7 @@ Pipeline: **Read -> Plan -> Write -> Verify**
 | `sequential-thinking` | `sequentialthinking` |
 | `git-history` | history/blame for existing design context |
 | `web-search` | principle and pattern definitions |
-| `fetch-markdown` | `fetch` |
+| `fetch` | `fetch` |
 | `large-file` | `get_file_summary`, `read_large_file_chunk` |
 
 ## Anti-Patterns

@@ -208,7 +208,7 @@ JSON
         "BRAVE_API_KEY": "your_api_key_here"
       }
     },
-    "fetch-markdown": {
+    "fetch": {
       "command": "npx",
       "args": [
         "-y",
@@ -298,7 +298,7 @@ cat << 'EOF' > "$BACKUP_FILE"
       "args": ["-y", "@modelcontextprotocol/server-brave-search"],
       "env": { "BRAVE_API_KEY": "YOUR_KEY" }
     },
-    "fetch-markdown": {
+    "fetch": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-fetch"]
     }
@@ -372,7 +372,7 @@ JSON
         "BRAVE_API_KEY": "YOUR_BRAVE_KEY"
       }
     },
-    "fetch-markdown": {
+    "fetch": {
       "command": "uvx",
       "args": [
         "mcp-server-fetch"
@@ -459,7 +459,7 @@ cat << 'EOF' > "$MASTER_CONF"
       "args": ["-y", "@modelcontextprotocol/server-brave-search"],
       "env": { "BRAVE_API_KEY": "YOUR_KEY" }
     },
-    "fetch-markdown": {
+    "fetch": {
       "command": "uvx",
       "args": ["mcp-server-fetch"]
     }

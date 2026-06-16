@@ -5,7 +5,7 @@ This repository uses Model Context Protocol (MCP) servers to extend the capabili
 ## Recent Configuration Updates & Security Fixes
 
 *   **Secure Filesystem Access:** The `local-filesystem` server path argument was updated from `C:/` to `.`. This is a crucial security improvement. Using `.` is cross-platform (works on Windows, macOS, and Linux) and securely scopes the agent's file access exclusively to the current project directory. It prevents the agent from accidentally or maliciously reading/modifying sensitive OS files.
-*   **Corrected Fetch Package:** The `fetch-markdown` server was failing because `@modelcontextprotocol/server-fetch` does not exist on npm. This was corrected to use the official Python package via `uvx mcp-server-fetch`.
+*   **Corrected Fetch Package:** The `fetch` server was failing because `@modelcontextprotocol/server-fetch` does not exist on npm. This was corrected to use the official Python package via `uvx mcp-server-fetch`.
 
 ---
 
@@ -17,7 +17,7 @@ Here is a breakdown of every MCP server configured in `.gemini/settings.json`, w
 *   **What it is:** Provides the AI agent with read and write access to your local files and directories.
 *   **Why it's great:** It allows the agent to actively participate in your project. Instead of just giving you code snippets to copy-paste, the agent can explore your codebase, refactor files, write tests, and create new components directly within your scoped workspace.
 
-### 2. fetch-markdown (`mcp-server-fetch`)
+### 2. fetch (`mcp-server-fetch`)
 *   **What it is:** Converts raw HTML web pages into clean, LLM-friendly markdown.
 *   **Why it's great:** If you need the agent to use a newly released library, read a specific API reference, or follow an online tutorial, it can fetch the URL, read the documentation, and immediately apply that new knowledge to your code. 
 
@@ -107,10 +107,10 @@ You **do not** need to use any special "trigger words" to activate these tools. 
 
 ## Built-in Tools vs. MCP Tools
 
-You might notice that `local-filesystem` and `fetch-markdown` overlap with the Gemini CLI's native, built-in abilities (like its native file reader and web fetcher). If the built-in tools are faster and use fewer tokens, why include the MCP versions?
+You might notice that `local-filesystem` and `fetch` overlap with the Gemini CLI's native, built-in abilities (like its native file reader and web fetcher). If the built-in tools are faster and use fewer tokens, why include the MCP versions?
 
 *   **The Sandboxing Factor (Claude Desktop):** MCP was created by Anthropic, and the primary client is the Claude Desktop GUI. GUI apps run in strict security sandboxes and *cannot* access your hard drive natively. They strictly require the `local-filesystem` MCP. Many developers simply copy their config from Claude Desktop to the CLI. While the CLI doesn't strictly *need* it (since it runs directly in your terminal), it doesn't hurt to include it.
-*   **Fallback Implementations:** Built-in tools and MCP tools might solve the same problem using different underlying code. For instance, if the built-in web fetcher gets blocked by a website's anti-bot protection, the `fetch-markdown` MCP might use a different library (like `httpx`) that succeeds. It acts as a helpful backup wrench.
+*   **Fallback Implementations:** Built-in tools and MCP tools might solve the same problem using different underlying code. For instance, if the built-in web fetcher gets blocked by a website's anti-bot protection, the `fetch` MCP might use a different library (like `httpx`) that succeeds. It acts as a helpful backup wrench.
 *   **Standardization:** Some teams prefer to use a standardized set of MCP servers to ensure uniform behavior across different AI clients (Cursor, Windsurf, Claude Desktop, Gemini CLI).
 
 For Gemini CLI, the agent will generally prioritize its native, highly-optimized tools, but will autonomously fall back to MCP tools if they offer a better path to success.

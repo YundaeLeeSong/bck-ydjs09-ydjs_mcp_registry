@@ -47,7 +47,7 @@ Pipeline: **Read -> Plan -> Write -> Verify**
 ### 1. Read
 
 - Read the code to document and **neighboring documented modules** for style to match
-- Fetch style spec if needed: PEP 257, Google Python Style docstrings, Oracle Javadoc conventions (`web-search`, `fetch-markdown`)
+- Fetch style spec if needed: PEP 257, Google Python Style docstrings, Oracle Javadoc conventions (`web-search`, `fetch`)
 - List public API surface: modules, classes, functions, parameters, returns, raises/errors
 
 ### 2. Plan
@@ -75,7 +75,7 @@ Pipeline: **Read -> Plan -> Write -> Verify**
 | `local-filesystem` | `read_text_file`, `write_file`, `edit_file`, `search_files` |
 | `sequential-thinking` | `sequentialthinking` |
 | `web-search` | style guide lookup |
-| `fetch-markdown` | `fetch` |
+| `fetch` | `fetch` |
 
 ## Anti-Patterns
 

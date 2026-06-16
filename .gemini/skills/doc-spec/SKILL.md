@@ -39,7 +39,7 @@ Pipeline: **Read -> Plan -> Write -> Verify**
 
 - Read raw content: `read_text_file` or `large-file` if large (~8k+ tokens)
 - Find canonical spec URL: `web-search` (e.g. `"GitHub Flavored Markdown spec"`, `"LaTeX article sectioning"`)
-- Fetch spec: `fetch-markdown` -> `fetch`
+- Fetch spec: `fetch`
 - Search fallback per the search strategy in `GEMINI.md` (`iask-search`, `monica-search`)
 
 ### 2. Plan
@@ -63,7 +63,7 @@ Pipeline: **Read -> Plan -> Write -> Verify**
 | Server | Tools |
 |--------|-------|
 | `web-search` | `web-search`, `iask-search`, `monica-search` |
-| `fetch-markdown` | `fetch` |
+| `fetch` | `fetch` |
 | `sequential-thinking` | `sequentialthinking` |
 | `large-file` | `get_file_summary`, `read_large_file_chunk` |
 | `local-filesystem` | `read_text_file`, `write_file` |

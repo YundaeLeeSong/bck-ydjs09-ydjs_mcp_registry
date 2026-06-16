@@ -28,7 +28,7 @@ The search stops once a higher-authority tier corroborates the answer. A handoff
 When search results need processing before action, these phases are worked in order, and a loop back is made when one exposes a gap.
 
 1. **Triage** - results are ranked by authority (official spec over blog over tutorial over forum) and recency, duplicates are dropped, and anything still unanswered is noted.
-2. **Fetch** - canonical URLs are pulled in full with `fetch-markdown`, keeping section, version, and permalink. Conclusions are never drawn from snippets alone.
+2. **Fetch** - canonical URLs are pulled in full with `fetch`, keeping section, version, and permalink. Conclusions are never drawn from snippets alone.
 3. **Synthesize** - reasoning is done with `sequential-thinking` before writing. Conflicts and version mismatches are flagged, confirmed is separated from inferred, and an outline is drafted then revised.
 4. **Ground** - each claim is tied to a source and version, residual uncertainty is stated plainly, and a search tier is escalated if grounding fails.
 

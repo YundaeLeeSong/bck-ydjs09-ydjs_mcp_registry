@@ -28,7 +28,7 @@
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-filesystem", "."]
     },
-    "fetch-markdown": {
+    "fetch": {
       "command": "uvx",
       "args": ["mcp-server-fetch"]
     },
