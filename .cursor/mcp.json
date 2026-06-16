@@ -3,33 +3,52 @@
     "github": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-github"],
-      "env": { "GITHUB_PERSONAL_ACCESS_TOKEN": "${env:GITHUB_PERSONAL_ACCESS_TOKEN}" }
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${env:GITHUB_PERSONAL_ACCESS_TOKEN}"
+      }
     },
     "git-history": {
       "type": "stdio",
       "command": "uvx",
-      "args": ["mcp-server-git"]
+      "args": [
+        "mcp-server-git"
+      ]
     },
     "local-filesystem": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-filesystem", "."]
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "."
+      ]
     },
     "fetch": {
       "type": "stdio",
       "command": "uvx",
-      "args": ["mcp-server-fetch"]
+      "args": [
+        "mcp-server-fetch"
+      ]
     },
     "web-search": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@oevortex/ddg_search"]
+      "args": [
+        "-y",
+        "@oevortex/ddg_search"
+      ]
     },
     "postgres-db": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-postgres"],
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-postgres"
+      ],
       "env": {
         "PGHOST": "${env:PGHOST}",
         "PGPORT": "${env:PGPORT}",
@@ -41,22 +60,34 @@
     "memory": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-memory"]
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-memory"
+      ]
     },
     "sequential-thinking": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ]
     },
     "large-file": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@willianpinho/large-file-mcp"]
+      "args": [
+        "-y",
+        "@willianpinho/large-file-mcp"
+      ]
     },
     "markdown-tools": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@dougis/markdown-lint-mcp"]
+      "args": [
+        "-y",
+        "@dougis/markdown-lint-mcp"
+      ]
     }
   }
 }
