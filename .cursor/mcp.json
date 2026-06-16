@@ -1,0 +1,52 @@
+{
+  "mcpServers": {
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": { "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}" }
+    },
+    "git-history": {
+      "command": "uvx",
+      "args": ["mcp-server-git"]
+    },
+    "local-filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "."]
+    },
+    "fetch-markdown": {
+      "command": "uvx",
+      "args": ["mcp-server-fetch"]
+    },
+    "web-search": {
+      "command": "npx",
+      "args": ["-y", "@oevortex/ddg_search"]
+    },
+    "postgres-db": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-postgres"],
+      "env": {
+        "PGHOST": "${PGHOST}",
+        "PGPORT": "${PGPORT}",
+        "PGDATABASE": "${PGDATABASE}",
+        "PGUSER": "${PGUSER}",
+        "PGPASSWORD": "${PGPASSWORD}"
+      }
+    },
+    "memory": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-memory"]
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+    },
+    "large-file": {
+      "command": "npx",
+      "args": ["-y", "@willianpinho/large-file-mcp"]
+    },
+    "markdown-tools": {
+      "command": "npx",
+      "args": ["-y", "@dougis/markdown-lint-mcp"]
+    }
+  }
+}
