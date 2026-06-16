@@ -2,7 +2,7 @@
 inclusion: always
 ---
 
-# Analysis Search
+# Plan Search
 
 ## Voice
 
@@ -17,7 +17,7 @@ Replies are written in the third person and in the passive voice, in a formal im
 
 ## Search
 
-Evidence is gathered here and reasoned on in `analysis-research`. The tier order is as follows.
+Evidence is gathered here and reasoned on in `plan-research`. The tier order is as follows.
 
 1. **Primary** - Native search tools or web search are used for direct lookup and quick grounding
 2. **MCP fallback A (`iask-search`)** - Used for concise, fact-focused answers and rapid query iteration
@@ -27,4 +27,4 @@ Evidence is gathered here and reasoned on in `analysis-research`. The tier order
 
 The next tier is used immediately if one method fails or returns thin results. The search stops once a higher-authority tier corroborates the answer.
 
-**A handoff to `analysis-research` is made when** sources conflict, versions matter, results require cross-source synthesis, or the answer feeds writing or editing. **The search is retained when** a single authoritative source settles a simple lookup, and the answer is then given directly without a handoff.
+**A handoff to `plan-research` is made when** sources conflict, versions matter, results require cross-source synthesis, or the answer feeds writing or editing. **The search is retained when** a single authoritative source settles a simple lookup, and the answer is then given directly without a handoff.

@@ -1,4 +1,4 @@
-# --- Generated from ./.gitignores on Tue Jun 16 15:12:06 2026 ---
+# --- Generated from ./.gitignores on Tue Jun 16 19:23:27 2026 ---
 
 #############################################
 # A.gitignore
@@ -28,7 +28,21 @@ h2/
 # # Kiro (AI code assistant)
 # *[kK][iI][rR][oO]*
 
-
+# # for project specific specs
+# !/.kiro/
+# /.kiro/*
+# !/.kiro/specs/
+# !.config.kiro
+# !/.kiro/steering/
+# # CI/CD convention for personal configurations
+# /.kiro/steering/plan-*
+# /.kiro/steering/code-*
+# /.kiro/steering/build-*
+# /.kiro/steering/test-*
+# /.kiro/steering/release-*
+# /.kiro/steering/deploy-*
+# /.kiro/steering/operate-*
+# /.kiro/steering/monitor-*
 
 
 ################################################################
@@ -4106,7 +4120,7 @@ ui_*.h
 *.qmlc
 *.jsc
 Makefile*
-*build-*
+# *build-*
 *.qm
 *.prl
 

@@ -8,10 +8,10 @@ This guide describes how an AI agent behaves inside this repository once the cus
 
 | Rule | Activation | Effect |
 | --- | --- | --- |
-| `analysis-search` | Always | Sets the response voice and the search tier order for every reply |
-| `analysis-research` | Docs and on request | Triages, fetches, synthesizes, and grounds findings after a search |
-| `execute-python` | Python files and on request | Routes all Python execution through `uv run` |
-| `execute-node` | Node files and on request | Routes all Node tooling through `npx` |
+| `plan-search` | Always | Sets the response voice and the search tier order for every reply |
+| `plan-research` | Docs and on request | Triages, fetches, synthesizes, and grounds findings after a search |
+| `build-python` | Python files and on request | Routes all Python execution through `uv run` |
+| `build-node` | Node files and on request | Routes all Node tooling through `npx` |
 
 ### Skills (`.cursor/skills/`)
 
@@ -51,29 +51,29 @@ This guide describes how an AI agent behaves inside this repository once the cus
 
 Two parts of the configuration apply to every interaction regardless of the request.
 
-- **Response voice.** Replies are written in a formal third-person register in the passive voice. Emoji and elaborate Unicode are avoided, scannable formatting is used only when complexity warrants it, and necessary terms are defined inline. This is set by the `analysis-search` rule.
+- **Response voice.** Replies are written in a formal third-person register in the passive voice. Emoji and elaborate Unicode are avoided, scannable formatting is used only when complexity warrants it, and necessary terms are defined inline. This is set by the `plan-search` rule.
 - **Working-tree awareness.** Before each prompt is processed, the `beforeSubmitPrompt` hook runs `git status --short`, so the agent knows which files are modified or untracked without being told.
 
 ## Interaction scenarios
 
 ### Looking up a library, API, or standard
 
-When current information about an API, library, or specification is needed, the `analysis-search` rule sets the order of search. Native and web search are tried first, MCP search fallbacks follow, and DuckDuckGo through the `web-search` server widens coverage when results are thin. Official documentation pages are opened last for verification.
+When current information about an API, library, or specification is needed, the `plan-search` rule sets the order of search. Native and web search are tried first, MCP search fallbacks follow, and DuckDuckGo through the `web-search` server widens coverage when results are thin. Official documentation pages are opened last for verification.
 
-When the results need real processing rather than a single fact, the `analysis-research` rule takes over. Sources are triaged by authority and recency, the canonical page is pulled in full with `fetch`, the findings are reasoned through with `sequential-thinking`, and each claim is tied back to a source before any file is written.
+When the results need real processing rather than a single fact, the `plan-research` rule takes over. Sources are triaged by authority and recency, the canonical page is pulled in full with `fetch`, the findings are reasoned through with `sequential-thinking`, and each claim is tied back to a source before any file is written.
 
 Example request - "Find the current FastAPI lifespan API and update the server accordingly."
 
 ### Running Python
 
-Any Python execution is routed through `uv` by the `execute-python` rule. Scripts, tests, and tools are launched with `uv run`, and bare `python`, `python3`, or `pip` are not used. This matches the uv workspace described in the project README.
+Any Python execution is routed through `uv` by the `build-python` rule. Scripts, tests, and tools are launched with `uv run`, and bare `python`, `python3`, or `pip` are not used. This matches the uv workspace described in the project README.
 
 Example request - "Run the calculator tests."
 Resulting command form - `uv run pytest`, or `uv run poe sync-deps` after new imports are added.
 
 ### Running Node tooling
 
-Node-packaged binaries are run through `npx` by the `execute-node` rule, so linters, type checkers, and MCP servers are resolved locally or fetched on the fly rather than assumed global.
+Node-packaged binaries are run through `npx` by the `build-node` rule, so linters, type checkers, and MCP servers are resolved locally or fetched on the fly rather than assumed global.
 
 Example request - "Lint the TypeScript files."
 Resulting command form - `npx eslint .` or `npx tsc`.
@@ -157,7 +157,7 @@ A `"disabled": true` flag, as used by some other tools, is not part of Cursor's 
 Several parts of the configuration are designed to run in sequence.
 
 - **Build then design then integrate.** `code-spec` scaffolds a project, `code-develop` applies the design, and `code-migrate` integrates the result elsewhere.
-- **Search then research.** `analysis-search` gathers evidence and hands off to `analysis-research` when sources conflict, versions matter, or the answer feeds writing.
+- **Search then research.** `plan-search` gathers evidence and hands off to `plan-research` when sources conflict, versions matter, or the answer feeds writing.
 - **Write then verify.** Each document skill ends by invoking `md-verify` on Markdown output.
 - **Document alongside design.** `code-develop` records implementation reasoning inline while `code-document` writes the formal API surface, so the two cover different layers without overlap.
 

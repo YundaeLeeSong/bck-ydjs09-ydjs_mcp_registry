@@ -3,7 +3,7 @@ inclusion: fileMatch
 fileMatchPattern: "**/*.py,**/pyproject.toml,uv/**,uv.lock"
 ---
 
-# Execute Python
+# Build Python
 
 - **`uv` is used to run Python** - `uv run` is always used for scripts, tools, and tests.
   - Examples are `uv run python script.py`, `uv run pytest`, and `uv run poe sync-deps`.
