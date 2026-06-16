@@ -1,4 +1,4 @@
-# --- Generated from ./.gitignores on Tue Jun 16 12:07:21 2026 ---
+# --- Generated from ./.gitignores on Tue Jun 16 14:24:16 2026 ---
 
 #############################################
 # A.gitignore
@@ -135,8 +135,8 @@ bin-release/
 [Oo]bj/
 [Bb]in/
 
-# Other files and folders
-.settings/
+# # Other files and folders
+# .settings/
 
 # Executables
 *.swf
@@ -1756,8 +1756,8 @@ Debug/
 # IAR project "Release" directory
 Release/
 
-# IAR project settings directory
-settings/
+# # IAR project settings directory
+# settings/
 
 # IAR backup files
 Backup*

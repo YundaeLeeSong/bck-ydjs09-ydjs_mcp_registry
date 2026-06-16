@@ -1,24 +1,4 @@
 {
-  "hooks": {
-    "BeforeAgent": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "name": "Git Status",
-            "type": "command",
-            "command": "git status --short"
-          }
-        ]
-      }
-    ]
-  },
-  "mcp": {
-    "excluded": [
-      "github",
-      "postgres-db"
-    ]
-  },
   "mcpServers": {
     "github": {
       "command": "npx",
@@ -28,14 +8,18 @@
       ],
       "env": {
         "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
-      }
+      },
+      "disabled": true,
+      "autoApprove": []
     },
     "git-history": {
       "command": "uvx",
       "args": [
         "mcp-server-git"
       ],
-      "env": {}
+      "env": {},
+      "disabled": false,
+      "autoApprove": []
     },
     "local-filesystem": {
       "command": "npx",
@@ -44,14 +28,20 @@
         "@modelcontextprotocol/server-filesystem",
         "."
       ],
-      "env": {}
+      "env": {},
+      "disabled": false,
+      "autoApprove": [
+        "read_multiple_files"
+      ]
     },
     "fetch": {
       "command": "uvx",
       "args": [
         "mcp-server-fetch"
       ],
-      "env": {}
+      "env": {},
+      "disabled": false,
+      "autoApprove": []
     },
     "web-search": {
       "command": "npx",
@@ -59,7 +49,9 @@
         "-y",
         "@oevortex/ddg_search"
       ],
-      "env": {}
+      "env": {},
+      "disabled": false,
+      "autoApprove": []
     },
     "postgres-db": {
       "command": "npx",
@@ -73,7 +65,9 @@
         "PGDATABASE": "${PGDATABASE}",
         "PGUSER": "${PGUSER}",
         "PGPASSWORD": "${PGPASSWORD}"
-      }
+      },
+      "disabled": true,
+      "autoApprove": []
     },
     "memory": {
       "command": "npx",
@@ -81,7 +75,9 @@
         "-y",
         "@modelcontextprotocol/server-memory"
       ],
-      "env": {}
+      "env": {},
+      "disabled": false,
+      "autoApprove": []
     },
     "sequential-thinking": {
       "command": "npx",
@@ -89,7 +85,9 @@
         "-y",
         "@modelcontextprotocol/server-sequential-thinking"
       ],
-      "env": {}
+      "env": {},
+      "disabled": false,
+      "autoApprove": []
     },
     "large-file": {
       "command": "npx",
@@ -97,7 +95,9 @@
         "-y",
         "@willianpinho/large-file-mcp"
       ],
-      "env": {}
+      "env": {},
+      "disabled": false,
+      "autoApprove": []
     },
     "markdown-tools": {
       "command": "npx",
@@ -105,7 +105,9 @@
         "-y",
         "@dougis/markdown-lint-mcp"
       ],
-      "env": {}
+      "env": {},
+      "disabled": false,
+      "autoApprove": []
     }
   }
 }
