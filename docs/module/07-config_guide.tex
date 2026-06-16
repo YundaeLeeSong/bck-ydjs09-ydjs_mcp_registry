@@ -1,0 +1,101 @@
+\newpage
+\section{Master Configuration Guide}
+
+To deploy a robust, universal AI agent toolkit, you can combine the best servers from both the Node (npx) and Python (uvx) ecosystems into a single master configuration block. 
+
+When functionalities overlap (such as the \lstinline[style=inline]|fetch| capability), 
+the Node implementation (\lstinline[style=inline]|@modelcontextprotocol/server-fetch|) is 
+typically chosen due to its widespread adoption and canonical support, 
+while \lstinline[style=inline]|uvx| is preferred for native local system tasks 
+(like file I/O and Git history).
+
+\subsection{The Universal JSON Profile}
+This configuration aggregates repository control, system auditing, web discovery, 
+and reasoning. Many modern AI clients (like the Gemini CLI) support expanding local 
+environment variables directly within the JSON block using the 
+\lstinline[style=inline]|${ENV_VAR_NAME}| syntax, ensuring you don't leak secrets into your config files. 
+
+\textit{Note: If a referenced environment variable is not defined on your local machine, 
+the AI client will typically fail to start that specific MCP server (often logging a connection or authentication error), 
+while the rest of the correctly configured servers will continue to function normally. 
+Ensure these variables are exported in your shell profile 
+(e.g., \lstinline[style=inline]|.bashrc| or \lstinline[style=inline]|.zshrc|) before launching the client.}
+
+\begin{lstlisting}[style=json]
+{
+  "mcpServers": {
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": { "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}" }
+    },
+    "git-history": {
+      "command": "uvx",
+      "args": ["mcp-server-git"]
+    },
+    "local-filesystem": {
+      "command": "uvx",
+      "args": ["mcp-server-filesystem", "/"]
+    },
+    "fetch": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-fetch"]
+    },
+    "brave-search": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-brave-search"],
+      "env": { "BRAVE_API_KEY": "${BRAVE_API_KEY}" }
+    },
+    "postgres-db": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-postgres"],
+      "env": {
+        "PGHOST": "${PGHOST}",
+        "PGPORT": "${PGPORT}",
+        "PGDATABASE": "${PGDATABASE}",
+        "PGUSER": "${PGUSER}",
+        "PGPASSWORD": "${PGPASSWORD}"
+      }
+    },
+    "memory": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-memory"]
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+    },
+    "large-file": {
+      "command": "npx",
+      "args": ["-y", "@willianpinho/large-file-mcp"]
+    }
+  }
+}
+\end{lstlisting}
+
+\subsection{Deployment Instructions}
+To apply this universal configuration, copy the JSON block above and place it in the respective configuration file for your AI client.
+
+\begin{itemize}
+    \item \textbf{Claude Desktop}: 
+    \begin{itemize}
+        \item \textit{macOS/Linux}: \lstinline[style=inline]|~/.config/Claude/claude_desktop_config.json|
+        \item \textit{Windows}: \lstinline[style=inline]|%APPDATA%\Claude\claude_desktop_config.json|
+    \end{itemize}
+    
+    \item \textbf{Gemini CLI}: 
+    \begin{itemize}
+        \item Place the JSON inside \lstinline[style=inline]|~/.gemini/settings.json| or a local \lstinline[style=inline]|.gemini/settings.json| at your project root.
+        \item Verify successful bindings by running \lstinline[style=inline]|/mcp list| inside the prompt.
+    \end{itemize}
+    
+    \item \textbf{Kiro IDE}:
+    \begin{itemize}
+        \item Map the configuration to \lstinline[style=inline]|~/.config/Kiro/mcp_config.json|.
+    \end{itemize}
+    
+    \item \textbf{Cursor IDE}:
+    \begin{itemize}
+        \item While Cursor manages configurations via a UI, you can manually input these servers by navigating to \textbf{Settings -> Features -> MCP} and adding each entry using the ``command'' type matching the JSON definitions.
+    \end{itemize}
+\end{itemize}

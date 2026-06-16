@@ -1,0 +1,369 @@
+\newpage
+\part{Definition}
+\textbf{Model Context Protocol (MCP)} is a standardized communication \textbf{protocol}
+that securely connects AI large language \textbf{models} (LLMs) to external
+\textbf{contexts} like codebases, databases, and files, frequently using either
+standardized input and output (\textbf{STDIO}) for local integration or
+Server-Sent Events (\textbf{HTTP/SSE}) for network-based remote communication.
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Transport Layer}
+
+MCP splits the \textbf{application protocol}---JSON-RPC messages, initialization, tools, and resources---from the \textbf{transport} that carries those messages between host and server.
+\begin{itemize}
+\item \textbf{STDIO} keeps both sides on one machine and moves frames through OS \textbf{stdin} and \textbf{stdout} pipes.
+\item \textbf{HTTP/SSE} places the host and server process(es) on different hardware and recreates the same inbound/outbound channel shape with \texttt{POST /messages} and an open \texttt{GET /sse} stream.
+\end{itemize}
+
+Each transport below will be illustrated with two UML diagrams, component diagram and deployment diagram.
+\textbf{Component Diagram} shows \uline{what the software is built from}---logical parts and the interfaces between them and 
+\textbf{Deployment Diagram} shows \uline{where those parts physically run}---machines, processes, and the data paths that link them.
+
+
+
+
+
+
+
+
+
+
+
+\newpage
+\subsection{STDIO}
+
+\textbf{STDIO} uses a single physical machine---there is no network tier.
+The IDE or AI agent \textbf{host session} and the MCP \textbf{server session} are two separate \textbf{processes} on that same hardware.
+The host \uline{starts the MCP server as a child process}; \texttt{CalculatorService} \uline{depends on} \texttt{Host} to run on that machine.
+There is no HTTP layer---the host talks to the server through two OS pipes.
+The host writes \textbf{JSON-RPC 2.0} frames to the server's \textbf{stdin} and reads replies from \textbf{stdout}, one object per line.
+
+\paragraph{Component Diagram.}
+Figure~\ref{fig:stdio-component}: \texttt{Host} is the JSON-RPC client; \texttt{CalculatorService} is the MCP server 
+providing its unique service to the host, MCP client.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\umlbasiccomponent[x=0,y=0]{Host}
+\umlbasiccomponent[x=10.8,y=0]{CalculatorService}
+\umlprovidedinterface[interface=JSON-RPC]{CalculatorService}
+\umlrequiredinterface{Host}{CalculatorService}
+\end{tikzpicture}
+\caption{STDIO component}
+\label{fig:stdio-component}
+\end{figure}
+
+\paragraph{Deployment Diagram.}
+Figure~\ref{fig:stdio-deploy}: both run as separate processes on one local machine; 
+the host spawns the server on a seperate process and 
+exchanges JSON-RPC messages like communications of user and ai agent through \textbf{stdin} and \textbf{stdout} pipes.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[font=\small]
+  \coordinate (dev-sw) at (0, 0);
+  \coordinate (dev-ne) at (11.5, 3.8);
+  \umldeviceframe{dev-sw}{dev-ne}{Local machine}
+
+  \node[uml/artifact, minimum width=2.8cm] (host) at (3.0, 1.7) {Host};
+  \node[uml/artifact, minimum width=2.8cm] (server) at (8.5, 1.7) {CalculatorService};
+
+  \coordinate (host-stdin) at ($(host.east)+(0,0.22)$);
+  \coordinate (host-stdout) at ($(host.east)+(0,-0.22)$);
+  \coordinate (srv-stdin) at ($(server.west)+(0,0.22)$);
+  \coordinate (srv-stdout) at ($(server.west)+(0,-0.22)$);
+  \draw[uml/deploy link] (host-stdin) -- node[above, font=\scriptsize, pos=0.5] {stdin} (srv-stdin);
+  \draw[uml/deploy link] (srv-stdout) -- node[below, font=\scriptsize, pos=0.5] {stdout} (host-stdout);
+  \draw[uml/deploy depends] (server.south) -- ++(0,-0.55) coordinate (dep-corner);
+  \draw[uml/deploy depends] (dep-corner) -- node[below, font=\scriptsize, pos=0.5] {depends on} (dep-corner -| host.south) -- (host.south);
+\end{tikzpicture}
+\caption{STDIO deployment}
+\label{fig:stdio-deploy}
+\end{figure}
+
+
+
+
+
+\newpage
+\subsection{HTTP/SSE}
+
+\textbf{HTTP/SSE} spans \uline{two different machines}: the \textbf{client host} on one device and the MCP \textbf{server process(es)} on another, separated by a network boundary.
+The remote host cannot attach to real \textbf{stdin} and \textbf{stdout}, so \textbf{HTTP/SSE} recreates the same two-pipeline shape over HTTP:
+\texttt{POST /messages} carries client-to-server frames (like \textbf{stdin}), and an open \texttt{GET /sse} stream carries server-to-client replies (like \textbf{stdout}).
+Each remote server is a separate process on its own port, with its own session URI and its own pair of channels.
+
+\paragraph{Component Diagram.}
+Figure~\ref{fig:httpsse-component}: \texttt{Host} drives two independent MCP sessions---toward \texttt{CalculatorService} and toward \texttt{FetchService}---each over JSON-RPC.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\umlbasiccomponent[x=0,y=0]{Host}
+\umlbasiccomponent[x=10.5,y=1.6]{CalculatorService}
+\umlbasiccomponent[x=10.1,y=-1.6]{FetchService}
+\umlprovidedinterface[interface=JSON-RPC]{CalculatorService}
+\umlprovidedinterface[interface=JSON-RPC]{FetchService}
+\umlrequiredinterface{Host}{CalculatorService}
+\umlrequiredinterface{Host}{FetchService}
+\end{tikzpicture}
+\caption{HTTP/SSE component}
+\label{fig:httpsse-component}
+\end{figure}
+
+\paragraph{Deployment Diagram.}
+Figure~\ref{fig:httpsse-deploy}: \texttt{Host} on the client device; \texttt{CalculatorService} and \texttt{FetchService} on the server device, each with its own \texttt{POST /messages} and \texttt{GET /sse} pair across the HTTP network.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[font=\small]
+  \coordinate (client-sw) at (0, -2.0);
+  \coordinate (client-ne) at (4.8, 2.0);
+  \umldeviceframe{client-sw}{client-ne}{Client machine}
+  \node[uml/artifact, minimum width=2.8cm] (client) at (2.4, 0) {Host};
+
+  \coordinate (server-sw) at (8.2, -2.5);
+  \coordinate (server-ne) at (14.0, 2.5);
+  \umldeviceframe{server-sw}{server-ne}{Server machine}
+  \node[uml/artifact, minimum width=2.8cm] (calc) at (11.1, 0.55) {CalculatorService};
+  \node[uml/artifact, minimum width=2.8cm] (fetch) at (11.1, -1.55) {FetchService};
+
+  \draw[uml/network edge] (6.5, -2.7) -- node[below, font=\scriptsize\bfseries, text=black!55, pos=0.04] {HTTP network} (6.5, 2.7);
+
+  \coordinate (c-post-from) at ($(client.east)+(0,0.32)$);
+  \coordinate (c-post-to) at ($(calc.west)+(0,0.32)$);
+  \coordinate (c-sse-from) at ($(calc.west)+(0,-0.32)$);
+  \coordinate (c-sse-to) at ($(client.east)+(0,-0.32)$);
+  \draw[uml/deploy link] (c-post-from) -- node[above, font=\scriptsize, pos=0.7, sloped] {POST /messages} (c-post-to);
+  \draw[uml/deploy link] (c-sse-from) -- node[above, font=\scriptsize, pos=0.7, sloped] {GET /sse} (c-sse-to);
+
+  \coordinate (f-post-from) at ($(client.east)+(0,-0.32)$);
+  \coordinate (f-post-to) at ($(fetch.west)+(0,0.32)$);
+  \coordinate (f-sse-from) at ($(fetch.west)+(0,-0.32)$);
+  \coordinate (f-sse-to) at ($(client.east)+(0,-0.64)$);
+  \draw[uml/deploy link] (f-post-from) -- node[above, font=\scriptsize, pos=0.7, sloped] {POST /messages} (f-post-to);
+  \draw[uml/deploy link] (f-sse-from) -- node[below, font=\scriptsize, pos=0.7, sloped] {GET /sse} (f-sse-to);
+\end{tikzpicture}
+\caption{HTTP/SSE deployment}
+\label{fig:httpsse-deploy}
+\end{figure}
+
+
+
+
+
+
+
+
+
+
+
+
+\newpage
+
+\section{JSON-RPC 2.0}
+Regardless of the transport (both \textbf{STDIO} and \textbf{HTTP/SSE}), 
+all MCP clients and servers exchange \textbf{JSON-RPC 2.0} payloads: 
+structured requests, responses, and notifications. The transport decides how those payloads are wrapped.
+
+\paragraph{STDIO.}
+For a local server, the \textbf{host} starts a child process and communicates through pipes.
+There is no HTTP layer.
+The host writes \textbf{JSON-RPC 2.0} to the server's \textbf{stdin} and reads replies from \textbf{stdout}, one object per line.
+
+\begin{httpexchange}
+\begin{lstlisting}[style=json]
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "initialize",
+  "params": {
+    "protocolVersion": "2024-11-05",
+    "clientInfo": {
+      "name": "Host",
+      "version": "1.0"
+    }
+  }
+}
+\end{lstlisting}
+\httpmidarrows
+\begin{lstlisting}[style=json]
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "protocolVersion": "2024-11-05",
+    "serverInfo": {
+      "name": "CalculatorService", 
+      "version": "1.0"
+    },
+    "capabilities": {
+      "tools": { ... }
+    }
+  }
+}
+\end{lstlisting}
+\end{httpexchange}
+
+\paragraph{HTTP/SSE.}
+\textbf{HTTP/SSE} carries MCP over the network using ordinary HTTP.
+When the MCP server runs on another machine, the MCP \textbf{client} 
+cannot use that server's \textbf{stdin} and \textbf{stdout}.
+Instead, the client opens \texttt{GET /sse} to receive a long-lived 
+\textbf{Server-Sent Events} stream from the server, 
+and sends \textbf{JSON-RPC 2.0} requests with \texttt{POST /messages}.
+
+An MCP HTTP server exposes two endpoints to achieve duplex communication 
+since Server-Sent Events (SSE) are unidirectional.
+\begin{enumerate}
+  \item \texttt{GET /sse} is the \uline{server-to-client} channel: 
+  the client opens a long-lived HTTP GET and the server \uline{keeps that response channel opened} 
+  as a pipeline where the server pushes real-time responses to the client.
+  \item \texttt{POST /messages} is the \uline{client-to-server} channel:
+  the client sends short-lived HTTP POST requests whose bodies carry JSON-RPC 2.0 frames,
+  as a pipeline where the client pushes requests to the server.
+  The POST response is only \texttt{202 Accepted} with an empty body; the JSON-RPC reply arrives later on the open \texttt{GET /sse} stream.
+\end{enumerate}
+
+
+Suppose \texttt{Host} connects to two remote MCP servers: \texttt{CalculatorService} on \texttt{localhost:8000} and \texttt{FetchService} on \texttt{localhost:8001}.
+Each server is a separate process on its own port, with its own \texttt{GET /sse} session and its own POST URL.
+
+
+\newpage
+
+
+\subparagraph{\texttt{CalculatorService} (\texttt{localhost:8000}).}
+\texttt{GET /sse} first establishes the \uline{server-to-client} long-lived HTTP response channel
+acting as a pipeline where the server pushes real-time responses to the client like 
+the \textbf{stdout} in the \textbf{STDIO} transport.
+\textit{Note that the \texttt{endpoint} event supplies a session URI for the MCP client to push requests to the MCP server.}
+
+\begin{httpexchange}
+\begin{lstlisting}[style=http]
+GET /sse HTTP/1.1
+Host: localhost:8000
+Accept: text/event-stream
+\end{lstlisting}
+\httpmidarrows
+\begin{lstlisting}[style=http]
+HTTP/1.1 200 OK
+Content-Type: text/event-stream
+
+event: endpoint
+data: /messages?sessionId=calc-ex
+\end{lstlisting}
+\end{httpexchange}
+
+
+
+
+\texttt{POST /messages} is the \uline{client-to-server} short-lived HTTP request channel 
+for the MCP client to push requests to the MCP server like the \textbf{stdin} in the \textbf{STDIO} transport.
+
+\begin{httpexchange}
+\begin{lstlisting}[style=http]
+POST /messages?sessionId=calc-ex HTTP/1.1
+Host: localhost:8000
+Content-Type: application/json
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "initialize",
+  "params": {
+    "protocolVersion": "2024-11-05",
+    "clientInfo": {
+      "name": "Host",
+      "version": "1.0"
+    }
+  }
+}
+\end{lstlisting}
+\httpmidarrows
+\begin{lstlisting}[style=http]
+HTTP/1.1 202 Accepted
+\end{lstlisting}
+\end{httpexchange}
+
+
+
+
+Since \texttt{GET /sse} session was not closed after the \texttt{endpoint} event, the MCP server 
+can push responses to the MCP client asynchronously.
+When the server has a JSON-RPC reply ready, it pushes a \texttt{message} event with the response payload on the 
+open \texttt{GET /sse} connection like the \textbf{stdout} in the \textbf{STDIO} transport.
+
+\begin{httpexchange}
+\begin{lstlisting}[style=http]
+GET /sse HTTP/1.1
+Host: localhost:8000
+Accept: text/event-stream
+
+(... stream stays open ...)
+\end{lstlisting}
+\httpmidarrows
+\begin{lstlisting}[style=http]
+event: message
+data: {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "protocolVersion": "2024-11-05",
+    "serverInfo": {
+      "name": "CalculatorService",
+      "version": "1.0"
+    },
+    "capabilities": {
+      "tools": { ... }
+    }
+  }
+}
+\end{lstlisting}
+\end{httpexchange}
+
+
+
+\subparagraph{\texttt{FetchService} (\texttt{localhost:8001}).}
+\texttt{FetchService} follows the same sequence on port \texttt{8001}: its own \texttt{GET /sse} session, its own \texttt{endpoint} URI (\texttt{/messages?sessionId=fetch-ex}), its own \texttt{POST /messages} requests, and its own \texttt{message} events on the open SSE stream.
+The two servers are independent---\texttt{Host} keeps both long-lived \texttt{GET /sse} connections open at once, one per port, and routes each JSON-RPC frame to the matching session.
+The only difference in the \texttt{message} payload is \texttt{serverInfo.name}: \texttt{FetchService} instead of \texttt{CalculatorService}.
+
+
+
+
+
+
+
+
+\newpage
+
+\section{MCP Hub}
+People use \textbf{MCP Hub} in two different senses. The distinction matters when you read docs or community posts.
+\subsection{Runtime Hub}
+On your machine, the host or \textbf{runtime hub} includes the following:
+\begin{enumerate}
+    \item Claude Desktop (CLI)
+    \item Cursor (IDE)
+    \item Windsurf (IDE)
+    \item any other CLI or IDE AI agents
+\end{enumerate}
+The \textbf{host} reads one configuration file, \uline{starts each MCP server as a background process}, 
+and keeps every client session alive at the same time.
+When the \textbf{model} calls a \textbf{tool}, the host routes the \textbf{JSON-RPC} request to the right server and passes the result back into the conversation.
+In short, the host is the local \textbf{orchestrator} that wires many servers into a single agent session.
+\subsection{Discovery Hub}
+The same label is also used for a \textbf{public registry} or marketplace, like npm or Docker Hub, where you browse and install pre-built servers.
+Sites such as \url{https://smithery.ai} and \url{https://mcp-get.com} catalog community integrations (Slack, GitHub, memory stores, and more), often with a one-command install.
+Discovery hub \uline{helps you find servers, not run them}. Execution still happens in your host.

@@ -1,0 +1,35 @@
+\newpage
+\part{Building as an Individual Developer}
+
+Not every MCP server comes from a public registry.
+Developers often write \textbf{private} or \textbf{custom} servers for local scripts, internal APIs, or personal workflows.
+Each server still runs as its own process with its own transport; the \textbf{host} orchestrates them the same way as published packages.
+
+\section{Naming Your Work}
+
+Because \textbf{hub} usually refers to the client engine or a public marketplace, labeling a personal server collection as a ``hub'' can confuse others.
+
+Clearer terms for a repository of custom servers include:
+
+\begin{itemize}
+  \item \textbf{MCP Monorepo}: one repository containing multiple independent MCP packages.
+  \item \textbf{Custom MCP Suite}: a curated bundle of tools tailored to a specific workflow.
+  \item \textbf{MCP Config or Profile}: a standardized setup shared across IDEs and clients.
+\end{itemize}
+
+\noindent
+The \textbf{IDE or host is the hub} that spins up and coordinates processes; your repository is the collection of servers that hub can load.
+
+\section{Structuring a Personal MCP Project}
+
+A single-user setup benefits from treating custom servers as isolated packages under one repository.
+
+\begin{itemize}
+  \item Each service runs in its own \textbf{process} and communicates over its own \textbf{STDIO} or \textbf{HTTP/SSE} channel.
+  \item A failure or heavy load in one server does not block the others.
+  \item Shared logic (types, utilities, business rules) can live in a common library; transport and tool bindings stay in separate server packages.
+  \item One Git repository and one workspace config make it easy to version, clone, and reuse the same tools across IDEs.
+\end{itemize}
+
+Use a workspace layout (npm, pnpm, or Python \lstinline[style=inline]|uv| workspaces) so dependencies do not bleed between servers.
+Point each entry in your host configuration file at the correct package launch command.

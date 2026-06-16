@@ -1,0 +1,50 @@
+\documentclass{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{enumitem}
+\usepackage{tabularx}
+\usepackage{hyperref} 
+\hypersetup{
+  colorlinks=true,
+  linkcolor=black,
+  urlcolor=blue,
+  citecolor=black
+}
+\usepackage{ulem} 
+\usepackage{xcolor}
+\input{preamble-code.tex}
+\input{preamble-uml.tex}
+
+% Bordered table with paragraph-like spacing above and below.
+\newenvironment{paratable}{%
+  \par\addvspace{\baselineskip}%
+  \noindent
+  \begingroup
+  \renewcommand{\arraystretch}{1.4}%
+}{%
+  \endgroup
+  \par\addvspace{\baselineskip}%
+}
+
+\title{Model Context Protocol (MCP)\\[0.25em]\large Reference Notes}
+\author{Jaehoon Song}
+\date{\today}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+\input{module/01-general.tex}
+\input{module/02-mcp_distro.tex}
+\input{module/03-mcp_by_individual.tex}
+\input{module/04-mcp_configuration_for_usage.tex}
+\input{module/05-npx_guide.tex}
+\input{module/06-uvx_guide.tex}
+\input{module/07-config_guide.tex}
+
+\end{document}

@@ -1,0 +1,113 @@
+{
+  "mcpServers": {
+    "github": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
+      },
+      "disabled": true,
+      "autoApprove": []
+    },
+    "git-history": {
+      "command": "uvx",
+      "args": [
+        "mcp-server-git"
+      ],
+      "env": {},
+      "disabled": false,
+      "autoApprove": []
+    },
+    "local-filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "."
+      ],
+      "env": {},
+      "disabled": false,
+      "autoApprove": [
+        "read_multiple_files"
+      ]
+    },
+    "fetch": {
+      "command": "uvx",
+      "args": [
+        "mcp-server-fetch"
+      ],
+      "env": {},
+      "disabled": false,
+      "autoApprove": []
+    },
+    "web-search": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@oevortex/ddg_search"
+      ],
+      "env": {},
+      "disabled": false,
+      "autoApprove": []
+    },
+    "postgres-db": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-postgres"
+      ],
+      "env": {
+        "PGHOST": "${PGHOST}",
+        "PGPORT": "${PGPORT}",
+        "PGDATABASE": "${PGDATABASE}",
+        "PGUSER": "${PGUSER}",
+        "PGPASSWORD": "${PGPASSWORD}"
+      },
+      "disabled": true,
+      "autoApprove": []
+    },
+    "memory": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-memory"
+      ],
+      "env": {},
+      "disabled": false,
+      "autoApprove": []
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ],
+      "env": {},
+      "disabled": false,
+      "autoApprove": []
+    },
+    "large-file": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@willianpinho/large-file-mcp"
+      ],
+      "env": {},
+      "disabled": false,
+      "autoApprove": []
+    },
+    "markdown-tools": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@dougis/markdown-lint-mcp"
+      ],
+      "env": {},
+      "disabled": false,
+      "autoApprove": []
+    }
+  }
+}

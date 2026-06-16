@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "name": "Git Status Before Prompt",
+  "description": "Runs git status --short before each prompt is submitted, giving the agent context about the current working tree state",
+  "version": "1",
+  "when": {
+    "type": "promptSubmit"
+  },
+  "then": {
+    "type": "runCommand",
+    "command": "git status --short"
+  }
+}
