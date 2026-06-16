@@ -19,7 +19,7 @@ When starting a server, you must ensure it runs asynchronously. Depending on you
 
 **Example (Universal Bash):**
 ```bash
-python -m my_server > server_logs.txt 2>&1 &
+uv run python -m my_server > server_logs.txt 2>&1 &
 ```
 
 ## 2. Verifying the Server State
