@@ -1,8 +1,11 @@
-# --- Generated from ./.gitignores on Thu Jun 18 10:53:23 2026 ---
+# --- Generated from ./.gitignores on Thu Jun 18 14:12:13 2026 ---
 
 #############################################
 # A.gitignore
 #############################################
+
+# Note: git check-ignore -v <ignored_file> can be used to debug which rule is ignoring a file
+
 #################### ALL PURPOSE GITIGNORE ####################
 project2305*
 _*
@@ -18,33 +21,33 @@ log*/
 playwright*/
 h2/
 
-# ################################################################
-# # AI Model Specific Ignores
-# ################################################################ 
-# # Gemini (Google's AI model)
-# *[gG][eE][mM][iI][nN][iI]*
-# # Cursor IDE
-# *[cC][uU][rR][sS][oO][rR]*
-# # Kiro (AI code assistant)
-# *[kK][iI][rR][oO]*
+################################################################
+# AI Model Specific Ignores
+################################################################ 
+# Gemini (Google's AI model)
+*[gG][eE][mM][iI][nN][iI]*
+# Cursor IDE
+*[cC][uU][rR][sS][oO][rR]*
+# Kiro (AI code assistant)
+*[kK][iI][rR][oO]*
 
-# # for project specific specs
-# !/.kiro/
-# /.kiro/*
-# !/.kiro/specs/
-# !.config.kiro
-# !/.kiro/steering/
-# # CI/CD convention for personal configurations
-# /.kiro/steering/plan-*
-# /.kiro/steering/code-*
-# /.kiro/steering/build-*
-# /.kiro/steering/test-*
-# /.kiro/steering/release-*
-# /.kiro/steering/deploy-*
-# /.kiro/steering/operate-*
-# /.kiro/steering/monitor-*
-# # Educational Purposed configurations
-# /.kiro/steering/edu-*
+# for project specific specs
+!/.kiro/
+/.kiro/*
+!/.kiro/specs/
+!.config.kiro
+!/.kiro/steering/
+# CI/CD convention for personal configurations
+/.kiro/steering/plan-*
+/.kiro/steering/code-*
+/.kiro/steering/build-*
+/.kiro/steering/test-*
+/.kiro/steering/release-*
+/.kiro/steering/deploy-*
+/.kiro/steering/operate-*
+/.kiro/steering/monitor-*
+# Educational Purposed configurations
+/.kiro/steering/edu-*
 
 
 ################################################################
@@ -6123,7 +6126,7 @@ wp-config.php
 #############################################
 # Xojo (formerly REALbasic and Real Studio)
 
-Builds*
+# Builds*
 *.debug
 *.debug.app
 Debug*.exe

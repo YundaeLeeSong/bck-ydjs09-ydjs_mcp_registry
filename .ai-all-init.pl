@@ -12,6 +12,29 @@ print "=========================================================================
 my $current_dir = abs_path(getcwd());
 print "Current Directory: $current_dir\n\n";
 
+# [Sync Mode Prompt]
+#
+# Prompt the user to choose between reset and update modes
+# Reset mode removes existing target configurations before copying
+# Update mode overwrites target files without deleting other target files
+
+my $sync_mode; # sync mode
+while (1) { # sync mode
+    print "Please select synchronization mode:\n"; # sync mode
+    print "  [1] Reset (removes target files/directories first, clean slate)\n"; # sync mode
+    print "  [2] Update (overwrites changed files, preserves target-specific settings)\n"; # sync mode
+    print "Selection (1 or 2): "; # sync mode
+    my $input = <STDIN>; # sync mode
+    if (defined $input) { # sync mode
+        chomp($input); # sync mode
+        if ($input eq '1' or $input eq '2') { # sync mode
+            $sync_mode = $input; # sync mode
+            last; # sync mode
+        } # sync mode
+    } # sync mode
+    print "Invalid entry, please input 1 or 2\n\n"; # sync mode
+} # sync mode
+
 # Define the folders and files to sync
 my @dirs_to_sync = ('.cursor', '.gemini', '.kiro');
 my @files_to_sync = ('GEMINI.md', '.ai-kiro.bat', '.ai-cursor.bat', '.ai-gemini.bat');
@@ -60,21 +83,42 @@ foreach my $sibling (@siblings) {
     print "Processing: $target_dir\n";
     print "--------------------------------------------------\n";
 
-    # 1. Delete existing target files and folders
-    print "Clearing old configurations...\n";
-    foreach my $d (@dirs_to_sync) {
-        my $target_path = "$target_dir/$d";
-        if (-d $target_path) {
-            rmtree($target_path);
-        }
-    }
-    
-    foreach my $f (@files_to_sync) {
-        my $target_path = "$target_dir/$f";
-        if (-e $target_path) {
-            unlink($target_path);
-        }
-    }
+    # [Past version]
+    #
+    #     foreach my $d (@dirs_to_sync) { # sync mode
+    #         my $target_path = "$target_dir/$d"; # sync mode
+    #         if (-d $target_path) { # sync mode
+    #             rmtree($target_path); # sync mode
+    #         } # sync mode
+    #     } # sync mode
+    #     
+    #     foreach my $f (@files_to_sync) { # sync mode
+    #         my $target_path = "$target_dir/$f"; # sync mode
+    #         if (-e $target_path) { # sync mode
+    #             unlink($target_path); # sync mode
+    #         } # sync mode
+    #     } # sync mode
+    #
+    # Replaced code that unconditionally deleted target folders and files
+    # The new logic checks if the user selected a reset mode before deleting
+    # This prevents unintended deletion of local repository-specific settings
+
+    if ($sync_mode eq '1') { # sync mode
+        print "Clearing old configurations...\n"; # sync mode
+        foreach my $d (@dirs_to_sync) { # sync mode
+            my $target_path = "$target_dir/$d"; # sync mode
+            if (-d $target_path) { # sync mode
+                rmtree($target_path); # sync mode
+            } # sync mode
+        } # sync mode
+        
+        foreach my $f (@files_to_sync) { # sync mode
+            my $target_path = "$target_dir/$f"; # sync mode
+            if (-e $target_path) { # sync mode
+                unlink($target_path); # sync mode
+            } # sync mode
+        } # sync mode
+    } # sync mode
 
     # 2. Copy source to target
     print "Copying new configurations...\n";
