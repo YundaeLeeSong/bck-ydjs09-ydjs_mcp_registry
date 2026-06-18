@@ -1,0 +1,37 @@
+---
+inclusion: fileMatch
+fileMatchPattern: "**/*.tex"
+---
+
+# LaTeX exam class
+
+Applies when editing `.tex` that uses the `exam` document class (e.g. `\question`, `\begin{choices}`).
+
+## Question types
+
+| Type | Answer wrapper | Points |
+|------|----------------|--------|
+| MCQ | `\begin{solution}...\end{solution}` after `\begin{choices}` | Optional: `\question` or `\question[n]` |
+| FRQ (student writes work) | `\begin{solutionorbox}[height]` with key inside | Optional |
+| FRQ / narrative (answer in stem) | No box; prose or `\begin{itemize}` in the question | Often `\question[0]` |
+
+Use `\CorrectChoice` on the right MCQ option. Prefer `\begin{choices}` unless the file already uses another environment.
+
+## Layout
+
+MCQ: stimulus (table, listing, diagram, prose) then choices then a short solution. CS/REST style: `\begin{lstlisting}[style=http]`, four choices, one paragraph solution.
+
+FRQ with parts: `\begin{enumerate}` with `\renewcommand{\labelenumi}{(\alph{enumi})}` and `solutionorbox` per part when work is required.
+
+## Listings and images
+
+- Block: `\begin{lstlisting}[style=java]` (`http`, `json`, `pseudo`, ...)
+- Inline: `\lstinline[style=javainline]|...|` or bare `\lstinline` when Java is the default
+- Pair styles: `lang` / `langinline` in `preamble-code.tex`; block-only: `json`, `toml`, `xml`, `http`
+- Images per module: `{module}/images/...`, not a shared hub
+- Use `lstlisting` + style, not custom environments (`cspcode`, `httplisting`)
+
+## Do not
+
+- `solutionorbox` on MCQ
+- `\begin{solution}` only where the student must show written work (use `solutionorbox`)
