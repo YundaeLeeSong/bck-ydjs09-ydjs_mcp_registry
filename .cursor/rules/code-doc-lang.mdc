@@ -1,0 +1,72 @@
+---
+description: Documentation and comments for general source code (C-style and hash line comments)
+globs: "**/*.{c,h,cpp,cc,cxx,java,kt,kts,scala,groovy,gradle,vb,py,pyw,pyi,rb,php,js,jsx,mjs,cjs,ts,tsx,mts,cts,go,rs,swift,dart,lua,pl,pm,r,R,asm,cmake,awk,css,scss,sass,sh,bash,zsh,ps1}"
+alwaysApply: false
+---
+
+# Code documentation
+
+## Two audiences
+
+- **Maintainers** - comments are placed in source and config directly above the code they explain.
+- **Consumers** - official API docs on the public surface, or README and docs/ for how to run and use the project.
+
+Run instructions are not placed in source comments. Maintainer notes are not placed in public API docs.
+
+Only ASCII is used in maintainer comments (for example `->` instead of arrows, `-` instead of em dashes, `...` instead of ellipsis characters).
+
+## Maintainer block comments
+
+A block is placed directly above the related code. `[Label]` appears on its own line, followed by a blank line, then an explanation (multi-line, no semicolons).
+
+A short inline concept name is added on each related code line (`// JUnit`). Only the concept is used in inline comments, not extra words such as "stack". Longer wording is placed in the block explanation.
+
+### `[Past version]` only
+
+1. Past code lines are listed first (each with an inline concept name), then a blank line, then an explanation.
+2. Active (new) lines receive the same inline concept name after each changed line.
+
+Example:
+
+```
+/*
+ * [Past version]
+ * implementation("io.javalin:javalin:5.0.1")                  // Javalin
+ *
+ * Upgraded to 7.2.2 for Jetty 12 native stack.
+ */
+implementation("io.javalin:javalin:7.2.2")                  // Javalin
+```
+
+### Regular labels (not past version)
+
+```
+/*
+ * [Unit Tests]
+ *
+ * JUnit 5 (Jupiter) for new tests.
+ * Vintage engine runs legacy JUnit 4 suite from Maven.
+ */
+testImplementation(libs.junit.jupiter)                         // JUnit Jupiter
+```
+
+The file type's native block delimiter is used (`/* */`, `{- -}`, `--[[ ]]`, and so on). Example (C-family):
+
+```
+/*
+ * [Label]
+ *
+ * Explanation here.
+ */
+```
+
+Line comments (`//`, `#`, `--`, `;`, `%`, `!`, `::`, `REM`) are reserved for single-line maintainer notes only, not multi-line explanations.
+
+## Public API docs
+
+The language's standard doc format is used on exported or callable API only (Javadoc, KDoc, JSDoc, TSDoc, rustdoc, XML doc, and so on). A summary is included. `@param`, `@returns`, `@author`, and `@since` are added when the project already uses them.
+
+## When editing
+
+- The smallest change that solves the task is made.
+- Existing naming, layout, and comment style in the file is matched.

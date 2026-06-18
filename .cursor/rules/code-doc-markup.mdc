@@ -1,0 +1,43 @@
+---
+description: Documentation and comments for markup and XML-family files
+globs: "**/*.{html,htm,xhtml,xml,xsd,xsl,targets,config,manifest,xaml,sitemap}"
+alwaysApply: false
+---
+
+# Markup documentation
+
+## Two audiences
+
+- **Maintainers** - XML and HTML comments are placed directly above the element or block they describe.
+- **Consumers** - project README or docs/ for usage, and schema docs for public contracts when this repo publishes them.
+
+Maintainer essays are not placed in user-facing pages. Run instructions are not placed inside markup files.
+
+Only ASCII is used in maintainer comments.
+
+## Maintainer block comments
+
+`<!-- ... -->` is used. `[Label]` appears on its own line inside the comment, followed by a blank line, then an explanation (multi-line, no semicolons).
+
+A short inline concept name may be added on the related element or attribute when a single line carries the setting.
+
+```xml
+<!--
+  [Label]
+
+  What this element or block does and when it is changed.
+-->
+```
+
+For one-line notes only, `<!-- [Label] short note -->` is acceptable.
+
+`[Past version]` and `[Past version - removed]` follow the same rules as in `code-doc-lang`. Past markup lines are listed first (each with an inline concept name), then a blank line, then an explanation.
+
+## Public documentation
+
+HTML and XML rarely use Javadoc-style API docs. Public structure is documented in README, OpenAPI, XSD annotations, or external specs, not in inline maintainer comments.
+
+## When editing
+
+- The smallest change that solves the task is made.
+- Existing indentation and comment style in the file is matched.

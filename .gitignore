@@ -1,4 +1,4 @@
-# --- Generated from ./.gitignores on Tue Jun 16 19:23:27 2026 ---
+# --- Generated from ./.gitignores on Thu Jun 18 10:53:23 2026 ---
 
 #############################################
 # A.gitignore
@@ -18,9 +18,9 @@ log*/
 playwright*/
 h2/
 
-################################################################
-# AI Model Specific Ignores
-################################################################ 
+# ################################################################
+# # AI Model Specific Ignores
+# ################################################################ 
 # # Gemini (Google's AI model)
 # *[gG][eE][mM][iI][nN][iI]*
 # # Cursor IDE
@@ -43,6 +43,8 @@ h2/
 # /.kiro/steering/deploy-*
 # /.kiro/steering/operate-*
 # /.kiro/steering/monitor-*
+# # Educational Purposed configurations
+# /.kiro/steering/edu-*
 
 
 ################################################################

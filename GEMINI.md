@@ -44,23 +44,30 @@ When search results need processing before action, these phases are worked in or
 - npm packages are NEVER assumed to be installed globally, so commands run against the local `node_modules` install or are fetched on the fly.
 - MCP servers in configuration json files use `npx` or `uvx`, and bare package names are not used.
 
-## LaTeX Exam Conventions
-
-Conventions for LaTeX documents utilizing the `exam` document class are observed as follows.
-
-- The `choices` environment is employed for multiple-choice questions, and the `\CorrectChoice` command is applied to the valid option.
-- Free-response questions requiring student work utilize the `solutionorbox` environment, whereas narrative answers are provided in prose or within an `itemize` environment.
-- Multiple-choice question layout consists of a stimulus, such as a listing or diagram, followed by the choices and a brief solution.
-- Free-response questions with multiple parts utilize the `enumerate` environment with the label redefined to alphabetic characters via `\renewcommand{\labelenumi}{(\alph{enumi})}`.
-- Code formatting is managed through the `lstlisting` package, with specific styles such as `java`, `json`, or `pseudo` applied as defined in `preamble-code.tex`.
-- Images are maintained within module-specific directories rather than a centralized repository.
-- The `solutionorbox` environment is avoided for multiple-choice questions, and the `solution` environment is reserved for instances where a box is not required for the response.
-
 ## Code Documentation
 
-Documentation is strictly divided between maintainer and consumer audiences. Application run instructions are excluded from source comments, and maintainer-specific notes are omitted from public documentation.
+These rules apply across all source code, markup (XML/HTML), and SQL files.
 
-- **Maintainer Comments:** Maintainer block comments are placed directly above the code, markup element, or SQL statement. A `[Label]` is positioned on its own line within the block, followed by a concise explanation. Native block delimiters for the file type, such as `/* */` for C-family and SQL or `<!-- -->` for markup, are employed. Line comments are reserved for single-line maintainer notes.
-- **Public API Documentation:** Standard documentation formats, such as Javadoc, JSDoc, or rustdoc, are applied exclusively to exported or callable APIs. For markup and SQL, public contracts are documented in external specifications, README files, or schema documentation.
-- **Editing Constraints:** Changes are restricted to the smallest modification necessary, and the existing naming, layout, and comment style of the file are matched.
+- **Two Audiences:** Maintainer comments go directly in the source or config above the code they explain. Consumer documentation (usage, public API contracts, run instructions, published schemas) goes in `README.md`, `docs/`, or language-standard API doc formats (Javadoc, JSDoc, OpenAPI, etc.).
+- **Maintainer Comments:** Only ASCII characters are used. Block comments are placed directly above the related code.
+  - Format: `[Label]` on its own line, followed by a blank line, then a multi-line explanation without semicolons.
+  - Inline concept names: A short concept name is added on each related code line (e.g., `// JUnit`, `<!-- setting -->`, `-- user id`).
+  - `[Past version]`: For replaced code, past lines are listed first (with inline concept names), a blank line, then the explanation. Active lines follow with the same concept name.
+  - One-line notes are permitted using the file type's line comment syntax or short block syntax (e.g., `// [Label] short note`, `<!-- [Label] short note -->`, `-- [Label] short note`).
+- **Public API Docs:** The language's standard doc format (Javadoc, KDoc, docstrings, etc.) is used on exported or callable APIs only, including a summary and standard tags (`@param`, `@returns`). Maintainer essays or run instructions are never put in public API docs or user-facing pages.
+- **When Editing:** The smallest change that solves the task is made. Existing naming, layout, indentation, and comment style are matched.
 
+## LaTeX Exam Conventions
+
+Applies when editing `.tex` files that use the `exam` document class.
+
+- **Question Types:**
+  - **MCQ:** `\CorrectChoice` is used on the right option. Answers are provided in a `\begin{solution}...\end{solution}` block *after* `\begin{choices}`.
+  - **FRQ (student writes work):** `\begin{solutionorbox}[height]` is used with the key inside.
+  - **FRQ / narrative:** No box is used; prose or `\begin{itemize}` is put in the question.
+- **Layout:** For MCQs, the order is: stimulus (table, listing, diagram, prose), then choices, then a short solution. For CS/REST styles, `\begin{lstlisting}[style=http]`, four choices, and a one-paragraph solution are used. For FRQs with parts, `\begin{enumerate}` is used with `\renewcommand{\labelenumi}{(\alph{enumi})}`.
+- **Listings and Images:**
+  - Block: `\begin{lstlisting}[style=java]` (or `http`, `json`, `pseudo`, etc.) is used. Custom environments like `cspcode` are not used.
+  - Inline: `\lstinline[style=javainline]|...|` or bare `\lstinline` is used if Java is default.
+  - Images: Placed per module (`{module}/images/...`), not in a shared hub.
+- **Restrictions:** `solutionorbox` is not used on MCQs. `\begin{solution}` is not used where the student must show written work (`solutionorbox` is used instead).
