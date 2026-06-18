@@ -43,3 +43,15 @@ When search results need processing before action, these phases are worked in or
 - npm-packaged binaries are ALWAYS prefixed with `npx`. Example - `npx eslint .`, `npx tsc`, `npx jest`.
 - npm packages are NEVER assumed to be installed globally, so commands run against the local `node_modules` install or are fetched on the fly.
 - MCP servers in configuration json files use `npx` or `uvx`, and bare package names are not used.
+
+## LaTeX Exam Conventions
+
+Conventions for LaTeX documents utilizing the `exam` document class are observed as follows.
+
+- The `choices` environment is employed for multiple-choice questions, and the `\CorrectChoice` command is applied to the valid option.
+- Free-response questions requiring student work utilize the `solutionorbox` environment, whereas narrative answers are provided in prose or within an `itemize` environment.
+- Multiple-choice question layout consists of a stimulus, such as a listing or diagram, followed by the choices and a brief solution.
+- Free-response questions with multiple parts utilize the `enumerate` environment with the label redefined to alphabetic characters via `\renewcommand{\labelenumi}{(\alph{enumi})}`.
+- Code formatting is managed through the `lstlisting` package, with specific styles such as `java`, `json`, or `pseudo` applied as defined in `preamble-code.tex`.
+- Images are maintained within module-specific directories rather than a centralized repository.
+- The `solutionorbox` environment is avoided for multiple-choice questions, and the `solution` environment is reserved for instances where a box is not required for the response.
