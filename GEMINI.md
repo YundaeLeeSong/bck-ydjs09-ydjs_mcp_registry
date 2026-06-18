@@ -55,3 +55,12 @@ Conventions for LaTeX documents utilizing the `exam` document class are observed
 - Code formatting is managed through the `lstlisting` package, with specific styles such as `java`, `json`, or `pseudo` applied as defined in `preamble-code.tex`.
 - Images are maintained within module-specific directories rather than a centralized repository.
 - The `solutionorbox` environment is avoided for multiple-choice questions, and the `solution` environment is reserved for instances where a box is not required for the response.
+
+## Code Documentation
+
+Documentation is strictly divided between maintainer and consumer audiences. Application run instructions are excluded from source comments, and maintainer-specific notes are omitted from public documentation.
+
+- **Maintainer Comments:** Maintainer block comments are placed directly above the code, markup element, or SQL statement. A `[Label]` is positioned on its own line within the block, followed by a concise explanation. Native block delimiters for the file type, such as `/* */` for C-family and SQL or `<!-- -->` for markup, are employed. Line comments are reserved for single-line maintainer notes.
+- **Public API Documentation:** Standard documentation formats, such as Javadoc, JSDoc, or rustdoc, are applied exclusively to exported or callable APIs. For markup and SQL, public contracts are documented in external specifications, README files, or schema documentation.
+- **Editing Constraints:** Changes are restricted to the smallest modification necessary, and the existing naming, layout, and comment style of the file are matched.
+
