@@ -1,0 +1,42 @@
+---
+description: Documentation and comments for SQL and query scripts
+globs: "**/*.{sql,psql,mysql,pgsql,ddl,dml,hql,plsql,pls,tab,view,proc,fnc,trg,sqlite}"
+alwaysApply: false
+---
+
+# SQL documentation
+
+## Two audiences
+
+- **Maintainers** — SQL comments directly above the statement, object, or clause they describe.
+- **Consumers** — README or docs/ for how to run migrations and queries; data dictionary or ER docs for published schemas.
+
+Do not put application run instructions inside `.sql` files.
+
+## Maintainer block comments
+
+Put `[Label]` on its own line, then a short explanation.
+
+Block form:
+
+```sql
+/*
+ * [Label]
+ * What this script or object does; dependencies or order if relevant.
+ */
+```
+
+Line form (single-line notes only):
+
+```sql
+-- [Label] short note
+```
+
+## Public documentation
+
+Document published schema contracts in migration README, ER diagrams, or tool metadata—not only in inline comments.
+
+## When editing
+
+- Smallest change that solves the task.
+- Match existing naming and comment style in the file.
