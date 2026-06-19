@@ -15,7 +15,7 @@
 @REM Date:
 @REM   2026-06-16
 @REM Version:
-@REM   1.1
+@REM   1.2
 @REM ===========================================================================
 
 set "GREEN=[32m"
@@ -32,6 +32,10 @@ where cursor >nul 2>&1 || (
 set "TARGET=%~1"
 if "%TARGET%"=="" set "TARGET=%~dp0."
 
+set "LAUNCH_ARGS="%TARGET%""
+if exist "%USERPROFILE%\.bashrc" set "LAUNCH_ARGS=%LAUNCH_ARGS% "%USERPROFILE%\.bashrc""
+if exist "%TARGET%\README.md" set "LAUNCH_ARGS=%LAUNCH_ARGS% "%TARGET%\README.md""
+
 echo.%GREEN%Launching Cursor...%RESET%
 
 @REM We must launch the raw .exe directly. 
@@ -40,9 +44,9 @@ set "EXE=%LOCALAPPDATA%\Programs\cursor\Cursor.exe"
 if not exist "%EXE%" set "EXE=%LOCALAPPDATA%\Programs\Cursor\Cursor.exe"
 
 if exist "%EXE%" (
-    start "" "%EXE%" "%TARGET%"
+    start "" "%EXE%" %LAUNCH_ARGS%
 ) else (
-    start /b "" cursor "%TARGET%"
+    start /b "" cursor %LAUNCH_ARGS%
 )
 
 exit
