@@ -89,7 +89,7 @@ echo.%GREEN%Starting Gemini CLI Interactive Session...%RESET%
 echo.
 
 @REM Set your preferred model here. 
-set "MODEL=gemini-3.5-flash"
+set "MODEL=gemini-3-flash-preview"
 
 @REM Launch the CLI
 call gemini --model %MODEL%
