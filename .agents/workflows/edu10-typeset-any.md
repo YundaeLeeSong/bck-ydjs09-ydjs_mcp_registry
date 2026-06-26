@@ -19,14 +19,18 @@ Use this workflow when requested to "typeset", "format", or "proofread" text int
 
 > [!IMPORTANT]
 > **Scannability & Readability:**
-> - **Categorization by Context:** Base the choice of paragraphs versus lists on the content's pattern, focus, and length.
->   - **Disconnected Facts:** When a passage holds multiple unrelated data points (e.g., job title, salary, location), break them into an `itemize` or `enumerate` list rather than mashing them into one block paragraph.
->   - **Closely Related Concepts:** When multiple items share one broad concept (e.g., all technical requirements, or all soft skills), merge them into a cohesive paragraph within a single list item, **UNLESS the result becomes excessively lengthy, dense, or contains enumerable measures.**
->   - **Dense Sub-Concepts & Enumerable Measures:** When a broad concept carries enumerable measures (e.g., tiered compensation across years, sequential steps) or grows lengthy with sub-concepts (e.g., a framework stack broken down by layer), introduce it with a transition sentence and unpack the measures into a nested `itemize` or `enumerate` list. Do NOT force them into one block paragraph.
+> - **Categorization by Context:** Base the decision to use paragraphs versus lists on the content's pattern, focus, and length.
+>   - **Disconnected Facts:** When a paragraph contains multiple disconnected factual data points (e.g., job title, salary, location), do NOT mash them into a single block paragraph. Break them down into an `itemize` or `enumerate` list for clarity.
+>   - **Closely Related Concepts:** Conversely, when multiple items within a list focus on one broad or closely related concept (e.g., grouping all technical requirements, or grouping all soft skills), merge those items into a cohesive paragraph within a single list item rather than itemizing each point individually, **UNLESS the resulting paragraph becomes excessively lengthy, dense, or contains enumerable measures.**
+>   - **Dense Sub-Concepts & Enumerable Measures:** When a broad concept contains enumerable measures (e.g., tiered compensation across multiple years, sequential steps) or becomes excessively lengthy with sub-concepts (e.g., a vast array of technical frameworks broken down by layer), do NOT force them into a single block paragraph. Instead, introduce the broad concept with a transition sentence and unpack the sub-concepts or measures into a nested `itemize` or `enumerate` list to maximize scannability.
 > - Ensure harmonic use of `itemize` and `enumerate` for breaking down complex bodies of text (lists of roles, qualifications, or tasks) to maximize readability.
 > - **Dense Abbreviations:** When a dense series of abbreviations or domain terms (e.g., "EPV, PVWA, CPM, PSM") lacks natural sentence context, do NOT clump them together. Unpack them into a nested list, define each with a complete sentence, and use `\uline{...}` strictly on the 1-3 core defining words.
 > - Set US default 1-inch margins globally using `\usepackage[margin=1in]{geometry}`.
 > - Convert emails, URLs, and any natively linkable context into clickable links using `\usepackage{hyperref}` and `\href{url}{text}`.
+
+> [!IMPORTANT]
+> **Sectioning & Structure:**
+> - Break the document into logical segments using `\section*{...}` and `\subsection*{...}` tags. Do NOT rely solely on bold text or page breaks for document structure. Ensure the document is easily navigable.
 
 > [!IMPORTANT]
 > **Key Definitions & Abbreviations:**
@@ -77,6 +81,7 @@ Use this workflow when requested to "typeset", "format", or "proofread" text int
 1. **Analyze & Research:**
    - Identify the core takeaway (e.g., job title, location, main announcement, or core conclusion).
    - Inventory technical terms, abbreviations, and concepts that need defining.
+   - **Consolidate & Group:** Reorganize scattered source information logically by topic (e.g., group all platforms, all benefits, all policies together) before writing, ensuring the final document flows coherently without random categorization.
    - Research all domain abbreviations and terms using Search tools per the `plan-search` tier order, prioritizing accuracy over token cost.
    - Note any informal language or active voice to convert to formal passive voice.
    - Identify lists or complex bodies of text to transition into `itemize` or `enumerate` blocks.
@@ -114,6 +119,7 @@ Use this workflow when requested to "typeset", "format", or "proofread" text int
    - [ ] Every domain abbreviation is researched and given first-occurrence treatment only.
    - [ ] Footnotes attached to abbreviations sit before the expansion parenthesis, not after.
    - [ ] `\uline` is limited to 1-3 words and always paired with a bold keyword.
-   - [ ] Paragraph-versus-list choices follow the three-pattern categorization, with dense abbreviation clusters unpacked into nested lists.
+   - [ ] Paragraph-versus-list choices follow the three-pattern categorization, with dense sub-concepts unpacked into lists.
    - [ ] Emails and URLs are rendered with `\href{...}{...}`.
    - [ ] Source lines are wrapped near 80 characters with no comment-based section headings.
+   - [ ] Logical transitions are accompanied by proper `\section*{}` or `\subsection*{}` headers.

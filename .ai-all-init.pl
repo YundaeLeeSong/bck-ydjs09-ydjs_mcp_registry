@@ -37,7 +37,7 @@ while (1) { # sync mode
 
 # Define the folders and files to sync
 my @dirs_to_sync = ('.cursor', '.gemini', '.kiro', '.agents');
-my @files_to_sync = ('GEMINI.md', '.ai-kiro.bat', '.ai-cursor.bat', '.ai-gemini.bat', '.ai-antigravity.bat', '.ai-copilot.bat');
+my @files_to_sync = ('GEMINI.md', '.ai-kiro.bat', '.ai-cursor.bat', '.ai-gemini.bat', '.ai-agents-antigravity.bat', '.ai-agents-copilot.bat');
  
 # Custom recursive directory copy to avoid requiring non-core CPAN modules
 sub dircopy {
